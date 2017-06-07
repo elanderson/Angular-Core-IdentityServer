@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ClientApp.Controllers
 {
@@ -19,6 +15,12 @@ namespace ClientApp.Controllers
             var tokenResponse = await tokenClient.RequestClientCredentialsAsync("apiApp");
 
             ViewData["tokenResult"] = tokenResponse.IsError ? tokenResponse.Error : tokenResponse.Json.ToString();
+
+            var client = new HttpClient();
+            client.SetBearerToken(tokenResponse.AccessToken);
+
+            var apiResponse = await client.GetAsync("http://localhost:5001/api/identity");
+            ViewData["apiResult"] = apiResponse.IsSuccessStatusCode ? await apiResponse.Content.ReadAsStringAsync() : apiResponse.StatusCode.ToString();
 
             return View();
         }
