@@ -1,12 +1,14 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientApp.Controllers
 {
     public class IdentityController : Controller
     {
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var discovery = await DiscoveryClient.GetAsync("http://localhost:5000");
@@ -23,6 +25,12 @@ namespace ClientApp.Controllers
             ViewData["apiResult"] = apiResponse.IsSuccessStatusCode ? await apiResponse.Content.ReadAsStringAsync() : apiResponse.StatusCode.ToString();
 
             return View();
+        }
+
+        public async Task Logout()
+        {
+            await HttpContext.Authentication.SignOutAsync("Cookies");
+            await HttpContext.Authentication.SignOutAsync("oidc");
         }
     }
 }

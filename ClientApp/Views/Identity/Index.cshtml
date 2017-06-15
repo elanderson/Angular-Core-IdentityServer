@@ -4,3 +4,18 @@
 
 @ViewData["tokenResult"]
 @ViewData["apiResult"]
+
+<h3>User claims</h3>
+
+<dl>
+    @foreach (var claim in User.Claims)
+    {
+        <dt>@claim.Type</dt>
+        <dd>@claim.Value</dd>
+
+    }
+</dl>
+
+<form asp-controller="Identity" asp-action="Logout" method="post">
+    <button type="submit">Logout</button>
+</form>
