@@ -53,8 +53,6 @@ namespace WebApplicationBasic
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseStaticFiles();
-
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationScheme = "Cookies"
@@ -71,6 +69,8 @@ namespace WebApplicationBasic
                 ClientId = "mvc",
                 SaveTokens = true
             });
+
+            app.UseStaticFiles();
 
             app.UseMvc(routes =>
             {
