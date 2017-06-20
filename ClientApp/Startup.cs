@@ -67,6 +67,12 @@ namespace WebApplicationBasic
                 RequireHttpsMetadata = false,
 
                 ClientId = "mvc",
+                ClientSecret = "secret",
+
+                ResponseType = "code id_token",
+                Scope = { "apiApp", "offline_access" },
+
+                GetClaimsFromUserInfoEndpoint = true,
                 SaveTokens = true
             });
 

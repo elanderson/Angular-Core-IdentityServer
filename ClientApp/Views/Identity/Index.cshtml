@@ -1,8 +1,14 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Authentication
+@{
     ViewData["Title"] = "Identity";
 }
 
-@ViewData["tokenResult"]
+<dt>access token</dt>
+<dd>@await ViewContext.HttpContext.Authentication.GetTokenAsync("access_token")</dd>
+
+<dt>refresh token</dt>
+<dd>@await ViewContext.HttpContext.Authentication.GetTokenAsync("refresh_token")</dd>
+
 @ViewData["apiResult"]
 
 <h3>User claims</h3>
@@ -12,7 +18,6 @@
     {
         <dt>@claim.Type</dt>
         <dd>@claim.Value</dd>
-
     }
 </dl>
 
