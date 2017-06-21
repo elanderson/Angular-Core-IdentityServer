@@ -8,19 +8,21 @@ using IdentityApp.Models;
 
 namespace IdentityApp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        private static bool _migrated;
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            if (_migrated) return;
+            Database.Migrate();
+            _migrated = true;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
         }
     }
 }
