@@ -2,22 +2,33 @@
 using System.Security.Claims;
 using IdentityServer4;
 using IdentityServer4.Models;
-using IdentityServer4.Test;
 
 namespace IdentityApp
 {
     public class Config
     {
+        // scopes define the resources in your system
+        public static IEnumerable<IdentityResource> GetIdentityResources()
+        {
+            return new List<IdentityResource>
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
+            };
+        }
+
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>
             {
-                new ApiResource("apiApp", "API Application")
+                new ApiResource("apiApp", "My API")
             };
         }
 
+        // clients want to access resources (aka scopes)
         public static IEnumerable<Client> GetClients()
         {
+            // client credentials client
             return new List<Client>
             {
                 new Client
@@ -44,6 +55,8 @@ namespace IdentityApp
                     ClientName = "MVC Client",
                     AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
 
+                    RequireConsent = true,
+
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
@@ -62,15 +75,5 @@ namespace IdentityApp
                 }
             };
         }
-
-        public static IEnumerable<IdentityResource> GetIdentityResources()
-        {
-            return new List<IdentityResource>
-            {
-                new IdentityResources.OpenId(),
-                new IdentityResources.Profile(),
-            };
-        }
-
     }
 }

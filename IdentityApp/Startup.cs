@@ -55,6 +55,7 @@ namespace IdentityApp
 
             services.AddIdentityServer()
                 .AddTemporarySigningCredential()
+                .AddInMemoryPersistedGrants()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())

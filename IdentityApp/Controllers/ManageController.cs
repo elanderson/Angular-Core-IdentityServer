@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using IdentityApp.Models;
 using IdentityApp.Models.ManageViewModels;
 using IdentityApp.Services;
+using IdentityServer4.Quickstart.UI;
+using Microsoft.Extensions.Options;
 
 namespace IdentityApp.Controllers
 {
     [Authorize]
+    [SecurityHeaders]
     public class ManageController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -24,12 +24,12 @@ namespace IdentityApp.Controllers
         private readonly ILogger _logger;
 
         public ManageController(
-          UserManager<ApplicationUser> userManager,
-          SignInManager<ApplicationUser> signInManager,
-          IOptions<IdentityCookieOptions> identityCookieOptions,
-          IEmailSender emailSender,
-          ISmsSender smsSender,
-          ILoggerFactory loggerFactory)
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        IOptions<IdentityCookieOptions> identityCookieOptions,
+        IEmailSender emailSender,
+        ISmsSender smsSender,
+        ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;

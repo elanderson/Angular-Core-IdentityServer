@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -8,19 +7,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using IdentityApp.Models;
 using IdentityApp.Models.AccountViewModels;
 using IdentityApp.Services;
-using IdentityServer4.Quickstart.UI;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
+using IdentityServer4.Quickstart.UI;
+using Microsoft.AspNetCore.Http;
 
 namespace IdentityApp.Controllers
 {
     [Authorize]
+    [SecurityHeaders]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -28,13 +27,11 @@ namespace IdentityApp.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
-        private readonly string _externalCookieScheme;
         private readonly AccountService _account;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IOptions<IdentityCookieOptions> identityCookieOptions,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory,
@@ -44,7 +41,6 @@ namespace IdentityApp.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
@@ -494,14 +490,6 @@ namespace IdentityApp.Controllers
                 ModelState.AddModelError(string.Empty, "Invalid code.");
                 return View(model);
             }
-        }
-
-        //
-        // GET /Account/AccessDenied
-        [HttpGet]
-        public IActionResult AccessDenied()
-        {
-            return View();
         }
 
         #region Helpers

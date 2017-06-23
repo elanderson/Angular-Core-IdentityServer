@@ -33,7 +33,7 @@
                 See <a href="https://go.microsoft.com/fwlink/?LinkID=532713">this article</a>
                 for details on setting up this ASP.NET application to support two-factor authentication using SMS.
             </p>
-            @*@(Model.PhoneNumber ?? "None")
+            @(Model.PhoneNumber ?? "None")
                 @if (Model.PhoneNumber != null)
                 {
                     <br />
@@ -45,7 +45,7 @@
                 else
                 {
                     <a asp-controller="Manage" asp-action="AddPhoneNumber" class="btn-bracketed">Add</a>
-                }*@
+                }
         </dd>
 
         <dt>Two-Factor Authentication:</dt>
@@ -54,7 +54,7 @@
                 There are no two-factor authentication providers configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532713">this article</a>
                 for setting up this application to support two-factor authentication.
             </p>
-            @*@if (Model.TwoFactor)
+            @if (Model.TwoFactor)
                 {
                     <form asp-controller="Manage" asp-action="DisableTwoFactorAuthentication" method="post" class="form-horizontal">
                         Enabled <button type="submit" class="btn-link btn-bracketed">Disable</button>
@@ -65,7 +65,7 @@
                     <form asp-controller="Manage" asp-action="EnableTwoFactorAuthentication" method="post" class="form-horizontal">
                         <button type="submit" class="btn-link btn-bracketed">Enable</button> Disabled
                     </form>
-                }*@
+                }
         </dd>
     </dl>
 </div>
