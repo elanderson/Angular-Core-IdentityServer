@@ -17,7 +17,6 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
-using LoginViewModel = IdentityApp.Models.AccountViewModels.LoginViewModel;
 
 namespace IdentityApp.Controllers
 {
