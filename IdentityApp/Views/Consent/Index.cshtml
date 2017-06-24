@@ -1,4 +1,5 @@
-﻿@model ConsentViewModel
+﻿@using IdentityServer4.Quickstart.UI
+@model IdentityServer4.Quickstart.UI.ConsentViewModel
 
 <div class="page-consent">
     <div class="row page-header">
@@ -22,7 +23,7 @@
                 <input type="hidden" asp-for="ReturnUrl" />
 
                 <div>Uncheck the permissions you do not wish to grant.</div>
-                
+
                 @if (Model.IdentityScopes.Any())
                 {
                     <div class="panel panel-default consent-buttons">

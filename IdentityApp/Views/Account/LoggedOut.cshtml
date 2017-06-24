@@ -1,8 +1,8 @@
 ﻿@model LoggedOutViewModel
 
 @{ 
-    // set this so the layout rendering sees an anonymous user
-    ViewData["signed-out"] = true;
+    // set this so UI rendering sees an anonymous user
+    Context.User = new System.Security.Claims.ClaimsPrincipal(new System.Security.Claims.ClaimsIdentity());
 }
 
 <div class="page-header logged-out">
