@@ -9,7 +9,11 @@
 <dt>refresh token</dt>
 <dd>@await ViewContext.HttpContext.Authentication.GetTokenAsync("refresh_token")</dd>
 
-@ViewData["apiResult"]
+<dt>api response called with user access token</dt>
+<dd>@ViewData["apiCallUsingUserAccessToken"]</dd>
+
+<dt>api response called with client credentials</dt>
+<dd>@ViewData["clientCredentialsResponse"]</dd>
 
 <h3>User claims</h3>
 
