@@ -27,7 +27,16 @@ namespace ApiApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
+            services.AddCors(options =>
+            {
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5003")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             services.AddMvc();
         }
 
@@ -36,6 +45,8 @@ namespace ApiApp
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.UseCors("default");
 
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
