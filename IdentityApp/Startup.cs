@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -11,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using IdentityApp.Data;
+using IdentityApp.Data.Migrations.IdentityServer;
 using IdentityApp.Models;
 using IdentityApp.Services;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Controller;
 
 namespace IdentityApp
 {
@@ -84,6 +80,8 @@ namespace IdentityApp
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            IdentityServerDatabaseInitialization.InitializeDatabase(app);
 
             app.UseStaticFiles();
 
