@@ -27,6 +27,16 @@
                         <span class='glyphicon glyphicon-th-list'></span> Fetch data
                     </a>
                 </li>
+                <li *ngIf="!_loggedIn" [routerLinkActive]="['link-active']">
+                    <a (click)="login()" [routerLink]="['/login']">
+                        <span class="glyphicon glyphicon-user"></span> Login
+                    </a>
+                </li>
+                <li *ngIf="_loggedIn" [routerLinkActive]="['link-active']">
+                    <a (click)="logout()" [routerLink]="['/logout']">
+                        <span class='glyphicon glyphicon-log-out'></span> Logout
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
