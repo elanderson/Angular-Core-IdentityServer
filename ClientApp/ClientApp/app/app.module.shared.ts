@@ -27,8 +27,8 @@ export const sharedConfig: NgModule = {
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
             { path: 'callback', component: CallbackComponent },
-            { path: 'counter', component: CounterComponent },
-            { path: 'fetch-data', component: FetchDataComponent },
+            { path: 'counter', component: CounterComponent, canActivate:[AuthGuardService] },
+            { path: 'fetch-data', component: FetchDataComponent, canActivate:[AuthGuardService]  },
             { path: '**', redirectTo: 'home' }
         ])
     ],
