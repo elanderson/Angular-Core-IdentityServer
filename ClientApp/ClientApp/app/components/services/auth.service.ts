@@ -17,7 +17,7 @@ export class AuthService {
     private http:Http, 
     private _router: Router, 
     private _globalEventsManager: GlobalEventsManager) {
-    //if (typeof window !== 'undefined') { 
+    if (typeof window !== 'undefined') { 
       //instance needs to be created within the if clause
       //otherwise you'll get a sessionStorage not defined error.
         this._mgr = new UserManager(settings);
@@ -37,7 +37,7 @@ export class AuthService {
                 console.log("user unloaded");
             //}
         });
-    //}
+    }
   }
   clearState() {
       this._mgr.clearStaleState().then(function () {
@@ -85,7 +85,7 @@ export class AuthService {
       //TODO: Validate why even though _mgr has already been instantiated, I need to enclose
       //      the call in !== undefined, removing the if clause results in a failure of _mgr
       //      is undefined
-      //if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined') {
         this._mgr.signinRedirectCallback().then((user) => {
           console.log("signed in");
           this._loggedIn = true;
@@ -94,7 +94,7 @@ export class AuthService {
         }).catch(function (err) {
           console.log(err);
         });
-      //}
+      }
   }
 
   startSignoutMainWindow() {
