@@ -72,7 +72,30 @@ namespace IdentityApp
                         "apiApp"
                     },
                     AllowOfflineAccess = true
+                },
+
+                // OpenID Connect implicit flow client (Angular)
+                new Client
+                {
+                    ClientId = "ng",
+                    ClientName = "Angular Client",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+                    RequireConsent = true,
+
+                    RedirectUris = { "http://localhost:5002/auth.html" },
+                    PostLogoutRedirectUris = { "http://localhost:5002/index.html" },
+                    AllowedCorsOrigins = { "http://localhost:5002" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "apiApp"
+                    },
+
                 }
+
             };
         }
     }
