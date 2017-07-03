@@ -11,7 +11,7 @@ export class NavMenuComponent {
     public _loggedIn: boolean = false;
 
     constructor (
-      private _authService: AuthService, 
+      private _authService: AuthService,
       private _globalEventsManager: GlobalEventsManager) {
           _globalEventsManager.showNavBarEmitter.subscribe((mode)=>{
             // mode will be null the first time it is created, so you need to igonore it when null

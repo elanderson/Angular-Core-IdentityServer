@@ -5,6 +5,23 @@ import { Router } from "@angular/router";
 import { UserManager, Log, MetadataService, User } from 'oidc-client';
 import { GlobalEventsManager } from './global.events.manager';
 
+const settings: any = {
+    authority: 'http://localhost:5000',
+    client_id: 'ng',
+    redirect_uri: 'http://localhost:5002/callback',
+    post_logout_redirect_uri: 'http://localhost:5002/home',
+    response_type: 'id_token token',
+    scope: 'openid profile apiApp',
+
+    silent_redirect_uri: 'http://localhost:5002/silent-renew.html',
+    automaticSilentRenew: true,
+    accessTokenExpiringNotificationTime: 4,
+    // silentRequestTimeout:10000,
+
+    filterProtocolClaims: true,
+    loadUserInfo: true
+};
+
 @Injectable()
 export class AuthService {
   public _loggedIn: boolean = false;
@@ -14,10 +31,10 @@ export class AuthService {
   _authHeaders: Headers;
 
   constructor(
-    private http:Http, 
-    private _router: Router, 
+    private http:Http,
+    private _router: Router,
     private _globalEventsManager: GlobalEventsManager) {
-    if (typeof window !== 'undefined') { 
+    if (typeof window !== 'undefined') {
       //instance needs to be created within the if clause
       //otherwise you'll get a sessionStorage not defined error.
         this._mgr = new UserManager(settings);
@@ -47,7 +64,7 @@ export class AuthService {
       });
   }
 
-  getUser() { 
+  getUser() {
       this._mgr.getUser().then((user) => {
         console.log("got user");
         this._userLoadedEvent.emit(user);
@@ -81,7 +98,7 @@ export class AuthService {
       //        because is a function that only has one parameter (user) that explains
       //        why the other variables were undefined, the fix was to use an anonymous function
       //        a lambda expression.
-      
+
       //TODO: Validate why even though _mgr has already been instantiated, I need to enclose
       //      the call in !== undefined, removing the if clause results in a failure of _mgr
       //      is undefined
@@ -188,19 +205,3 @@ export class AuthService {
       return options;
   }
 }
-
-const settings: any = {
-  authority: process.env.authority,
-  client_id: process.env.client_id,
-  redirect_uri: process.env.redirect_uri,
-  post_logout_redirect_uri: process.env.post_logout_redirect_uri,
-  response_type: process.env.response_type,
-  scope: process.env.scope,
-
-  silent_redirect_uri: process.env.silent_redirect_uri,
-  //automaticSilentRenew: true,
-  //silentRequestTimeout:10000,
-
-  filterProtocolClaims: process.env.filterProtocolClaims,
-  loadUserInfo: process.env.loadUserInfo
-};

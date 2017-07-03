@@ -83,8 +83,8 @@ namespace IdentityApp
                     AllowAccessTokensViaBrowser = true,
                     RequireConsent = true,
 
-                    RedirectUris = { "http://localhost:5002/auth.html" },
-                    PostLogoutRedirectUris = { "http://localhost:5002/index.html" },
+                    RedirectUris = { "http://localhost:5002/callback" },
+                    PostLogoutRedirectUris = { "http://localhost:5002/home" },
                     AllowedCorsOrigins = { "http://localhost:5002" },
 
                     AllowedScopes =
