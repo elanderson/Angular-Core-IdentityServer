@@ -8,7 +8,7 @@ import { AppModule } from './app/app.module.server';
 
 enableProdMode();
 
-export default createServerRenderer(params => {
+export default createServerRenderer((params => {
     const providers = [
         { provide: INITIAL_CONFIG, useValue: { document: '<app></app>', url: params.url } },
         { provide: 'ORIGIN_URL', useValue: params.origin }
@@ -33,4 +33,4 @@ export default createServerRenderer(params => {
             });
         });
     });
-});
+}) as BootFunc);
