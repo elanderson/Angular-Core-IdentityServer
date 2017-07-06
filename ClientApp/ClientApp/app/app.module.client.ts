@@ -19,7 +19,8 @@ import { AuthGuardService } from './components/services/auth-guard.service';
     ],
     providers: [
         { provide: 'ORIGIN_URL', useValue: location.origin },
-        AuthService, AuthGuardService, GlobalEventsManager 
+        { provide: 'API_URL', useValue: "http://localhost:5001/api/" },
+        AuthService, AuthGuardService, GlobalEventsManager
     ]
 })
 export class AppModule {

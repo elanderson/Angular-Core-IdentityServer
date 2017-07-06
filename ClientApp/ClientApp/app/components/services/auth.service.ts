@@ -133,6 +133,7 @@ export class AuthService {
         console.log(err);
       });
   };
+
   /**
    * Example of how you can make auth request using angulars http methods.
    * @param options if options are not supplied the default content type is application/json
@@ -146,6 +147,7 @@ export class AuthService {
       }
       return this.http.get(url, options);
   }
+
   /**
    * @param options if options are not supplied the default content type is application/json
    */
@@ -160,9 +162,11 @@ export class AuthService {
       }
       return this.http.put(url, body, options);
   }
+
   /**
    * @param options if options are not supplied the default content type is application/json
    */
+
   AuthDelete(url: string, options?: RequestOptions): Observable<Response> {
       if (options) {
         options = this._setRequestOptions(options);
@@ -172,6 +176,7 @@ export class AuthService {
       }
       return this.http.delete(url, options);
   }
+
   /**
    * @param options if options are not supplied the default content type is application/json
    */
@@ -193,6 +198,7 @@ export class AuthService {
       this._authHeaders.append('Authorization', user.token_type + " " + user.access_token);
       this._authHeaders.append('Content-Type', 'application/json');
   }
+
   private _setRequestOptions(options?: RequestOptions) {
       if (options) {
         options.headers.append(this._authHeaders.keys[0], this._authHeaders.values[0]);
