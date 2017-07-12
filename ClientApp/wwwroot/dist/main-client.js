@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "7d753396a0feab67654c"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "22b26a037e035e473df9"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -2523,7 +2523,7 @@ module.exports = "<div class='main-nav'>\r\n    <div class='navbar navbar-invers
 /* 33 */
 /***/ (function(module, exports) {
 
-module.exports = "<h1>\r\n    Unauthorized Request\r\n</h1>\r\n<div>\r\n    <button (click)=\"login()\">Login</button>\r\n    <button (click)=\"goback()\">Back</button>\r\n</div>";
+module.exports = "<h2>\r\n    Login is required to access this area\r\n</h2>\r\n<div>\r\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"login()\">Login</button>\r\n    <button type=\"button\" class=\"btn btn-default\" (click)=\"goback()\">Back</button>\r\n</div>";
 
 /***/ }),
 /* 34 */
