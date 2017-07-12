@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "1acd7dfbcc31b511eb1f"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "7d753396a0feab67654c"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -755,29 +755,29 @@ var settings = {
     loadUserInfo: true
 };
 var AuthService = (function () {
-    function AuthService(http, _router, _globalEventsManager) {
+    function AuthService(http, router, globalEventsManager) {
         var _this = this;
         this.http = http;
-        this._router = _router;
-        this._globalEventsManager = _globalEventsManager;
-        this._loggedIn = false;
-        this._userLoadedEvent = new core_1.EventEmitter();
+        this.router = router;
+        this.globalEventsManager = globalEventsManager;
+        this.loggedIn = false;
+        this.userLoadedEvent = new core_1.EventEmitter();
         if (typeof window !== 'undefined') {
             //instance needs to be created within the if clause
             //otherwise you'll get a sessionStorage not defined error.
-            this._mgr = new oidc_client_1.UserManager(settings);
-            this._mgr
+            this.mgr = new oidc_client_1.UserManager(settings);
+            this.mgr
                 .getUser()
                 .then(function (user) {
                 if (user) {
-                    _this._currentUser = user;
-                    _this._userLoadedEvent.emit(user);
+                    _this.currentUser = user;
+                    _this.userLoadedEvent.emit(user);
                 }
             })
                 .catch(function (err) {
                 console.log(err);
             });
-            this._mgr.events.addUserUnloaded(function (e) {
+            this.mgr.events.addUserUnloaded(function (e) {
                 //if (!environment.production) {
                 console.log("user unloaded");
                 //}
@@ -785,62 +785,52 @@ var AuthService = (function () {
         }
     }
     AuthService.prototype.clearState = function () {
-        this._mgr.clearStaleState().then(function () {
-            console.log("clearStateState success");
+        this.mgr.clearStaleState().then(function () {
+            console.log('clearStateState success');
         }).catch(function (e) {
-            console.log("clearStateState error", e.message);
+            console.log('clearStateState error', e.message);
         });
     };
     AuthService.prototype.getUser = function () {
         var _this = this;
-        this._mgr.getUser().then(function (user) {
+        this.mgr.getUser().then(function (user) {
             console.log("got user");
-            _this._userLoadedEvent.emit(user);
+            _this.userLoadedEvent.emit(user);
         }).catch(function (err) {
             console.log(err);
         });
     };
     AuthService.prototype.removeUser = function () {
         var _this = this;
-        this._mgr.removeUser().then(function () {
-            _this._userLoadedEvent.emit(null);
+        this.mgr.removeUser().then(function () {
+            _this.userLoadedEvent.emit(null);
             console.log("user removed");
         }).catch(function (err) {
             console.log(err);
         });
     };
     AuthService.prototype.startSigninMainWindow = function () {
-        this._mgr.signinRedirect({ data: 'some data' }).then(function () {
+        this.mgr.signinRedirect({ data: 'some data' }).then(function () {
             console.log("signinRedirect done");
         }).catch(function (err) {
             console.log(err);
         });
     };
     AuthService.prototype.endSigninMainWindow = function () {
-        //TODO: Validate why in a promise a global variable is not accessible,
-        //      instead a method scope variable is required so it can be used within
-        //      the promise.
-        //Answer: the previous code was using function (user) { } instead of just (user) =>
-        //        because is a function that only has one parameter (user) that explains
-        //        why the other variables were undefined, the fix was to use an anonymous function
-        //        a lambda expression.
         var _this = this;
-        //TODO: Validate why even though _mgr has already been instantiated, I need to enclose
-        //      the call in !== undefined, removing the if clause results in a failure of _mgr
-        //      is undefined
         if (typeof window !== 'undefined') {
-            this._mgr.signinRedirectCallback().then(function (user) {
+            this.mgr.signinRedirectCallback().then(function (user) {
                 console.log("signed in");
-                _this._loggedIn = true;
-                _this._globalEventsManager.showNavBar(_this._loggedIn);
-                _this._router.navigate(['home']);
+                _this.loggedIn = true;
+                _this.globalEventsManager.showNavBar(_this.loggedIn);
+                _this.router.navigate(['home']);
             }).catch(function (err) {
                 console.log(err);
             });
         }
     };
     AuthService.prototype.startSignoutMainWindow = function () {
-        this._mgr.signoutRedirect().then(function (resp) {
+        this.mgr.signoutRedirect().then(function (resp) {
             console.log("signed out", resp);
             setTimeout(5000, function () {
                 console.log("testing to see if fired...");
@@ -851,7 +841,7 @@ var AuthService = (function () {
     };
     ;
     AuthService.prototype.endSignoutMainWindow = function () {
-        this._mgr.signoutRedirectCallback().then(function (resp) {
+        this.mgr.signoutRedirectCallback().then(function (resp) {
             console.log("signed out", resp);
         }).catch(function (err) {
             console.log(err);
@@ -864,10 +854,10 @@ var AuthService = (function () {
      */
     AuthService.prototype.AuthGet = function (url, options) {
         if (options) {
-            options = this._setRequestOptions(options);
+            options = this.setRequestOptions(options);
         }
         else {
-            options = this._setRequestOptions();
+            options = this.setRequestOptions();
         }
         return this.http.get(url, options);
     };
@@ -877,10 +867,10 @@ var AuthService = (function () {
     AuthService.prototype.AuthPut = function (url, data, options) {
         var body = JSON.stringify(data);
         if (options) {
-            options = this._setRequestOptions(options);
+            options = this.setRequestOptions(options);
         }
         else {
-            options = this._setRequestOptions();
+            options = this.setRequestOptions();
         }
         return this.http.put(url, body, options);
     };
@@ -889,10 +879,10 @@ var AuthService = (function () {
      */
     AuthService.prototype.AuthDelete = function (url, options) {
         if (options) {
-            options = this._setRequestOptions(options);
+            options = this.setRequestOptions(options);
         }
         else {
-            options = this._setRequestOptions();
+            options = this.setRequestOptions();
         }
         return this.http.delete(url, options);
     };
@@ -902,26 +892,26 @@ var AuthService = (function () {
     AuthService.prototype.AuthPost = function (url, data, options) {
         var body = JSON.stringify(data);
         if (options) {
-            options = this._setRequestOptions(options);
+            options = this.setRequestOptions(options);
         }
         else {
-            options = this._setRequestOptions();
+            options = this.setRequestOptions();
         }
         return this.http.post(url, body, options);
     };
-    AuthService.prototype._setAuthHeaders = function (user) {
-        this._authHeaders = new http_1.Headers();
-        this._authHeaders.append('Authorization', user.token_type + " " + user.access_token);
-        this._authHeaders.append('Content-Type', 'application/json');
+    AuthService.prototype.setAuthHeaders = function (user) {
+        this.authHeaders = new http_1.Headers();
+        this.authHeaders.append('Authorization', user.token_type + " " + user.access_token);
+        this.authHeaders.append('Content-Type', 'application/json');
     };
-    AuthService.prototype._setRequestOptions = function (options) {
+    AuthService.prototype.setRequestOptions = function (options) {
         if (options) {
-            options.headers.append(this._authHeaders.keys[0], this._authHeaders.values[0]);
+            options.headers.append(this.authHeaders.keys[0], this.authHeaders.values[0]);
         }
         else {
             //setting default authentication headers
-            this._setAuthHeaders(this._currentUser);
-            options = new http_1.RequestOptions({ headers: this._authHeaders, body: "" });
+            this.setAuthHeaders(this.currentUser);
+            options = new http_1.RequestOptions({ headers: this.authHeaders, body: "" });
         }
         return options;
     };
@@ -1003,16 +993,16 @@ var core_1 = __webpack_require__(0);
 var router_1 = __webpack_require__(5);
 var auth_service_1 = __webpack_require__(2);
 var AuthGuardService = (function () {
-    function AuthGuardService(_authService, _router) {
-        this._authService = _authService;
-        this._router = _router;
+    function AuthGuardService(authService, router) {
+        this.authService = authService;
+        this.router = router;
     }
     AuthGuardService.prototype.canActivate = function () {
-        if (this._authService._loggedIn) {
+        if (this.authService.loggedIn) {
             return true;
         }
         else {
-            this._router.navigate(['unauthorized']);
+            this.router.navigate(['unauthorized']);
         }
     };
     return AuthGuardService;
