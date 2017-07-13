@@ -7,6 +7,7 @@ import { HomeComponent } from './components/home/home.component';
 import { FetchDataComponent } from './components/fetchdata/fetchdata.component';
 import { CounterComponent } from './components/counter/counter.component';
 import { CallbackComponent } from './components/callback/callback.component';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 
 import { AuthService } from './components/services/auth.service';
 import { GlobalEventsManager } from './components/services/global.events.manager';
@@ -20,13 +21,15 @@ export const sharedConfig: NgModule = {
         CounterComponent,
         FetchDataComponent,
         HomeComponent,
-        CallbackComponent
+        CallbackComponent,
+        UnauthorizedComponent
     ],
     imports: [
         RouterModule.forRoot([
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
             { path: 'callback', component: CallbackComponent },
+            { path: 'unauthorized', component: UnauthorizedComponent },
             { path: 'counter', component: CounterComponent },
             { path: 'fetch-data', component: FetchDataComponent, canActivate:[AuthGuardService]  },
             { path: '**', redirectTo: 'home' }
