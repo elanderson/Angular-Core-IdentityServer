@@ -39,7 +39,7 @@ namespace IdentityApp
         {
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -57,10 +57,10 @@ namespace IdentityApp
                 .AddTemporarySigningCredential()
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddConfigurationStore(builder =>
-                    builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), options =>
+                    builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"), options =>
                        options.MigrationsAssembly(migrationsAssembly)))
                 .AddOperationalStore(builder =>
-                    builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), options =>
+                    builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"), options =>
                         options.MigrationsAssembly(migrationsAssembly)));
         }
 
