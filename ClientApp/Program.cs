@@ -16,6 +16,7 @@ namespace WebApplicationBasic
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
+                .UseUrls("http://localhost:5002")
                 .Build();
 
             host.Run();
