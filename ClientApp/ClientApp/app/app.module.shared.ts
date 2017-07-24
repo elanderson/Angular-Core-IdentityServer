@@ -13,6 +13,8 @@ import { AuthService } from './components/services/auth.service';
 import { GlobalEventsManager } from './components/services/global.events.manager';
 import { AuthGuardService } from './components/services/auth-guard.service';
 
+import { AuthModule, OpenIDImplicitFlowConfiguration, OidcSecurityService } from 'angular-auth-oidc-client';
+
 export const sharedConfig: NgModule = {
     bootstrap: [ AppComponent ],
     declarations: [
@@ -25,6 +27,7 @@ export const sharedConfig: NgModule = {
         UnauthorizedComponent
     ],
     imports: [
+        AuthModule.forRoot(),
         RouterModule.forRoot([
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
@@ -35,5 +38,5 @@ export const sharedConfig: NgModule = {
             { path: '**', redirectTo: 'home' }
         ])
     ],
-    providers: [ AuthService, AuthGuardService, GlobalEventsManager ]
+    providers: [AuthService, AuthGuardService, GlobalEventsManager, OidcSecurityService ]
 };
