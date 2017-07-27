@@ -1,6 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: 'app-unauthorized',
@@ -8,7 +7,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class UnauthorizedComponent implements OnInit {
 
-    constructor(private location: Location, private service: AuthService) {
+    constructor(private location: Location) {
 
     }
 
@@ -16,7 +15,7 @@ export class UnauthorizedComponent implements OnInit {
     }
 
     login() {
-        this.service.startSigninMainWindow();
+        //this.service.startSigninMainWindow();
     }
 
     goback() {

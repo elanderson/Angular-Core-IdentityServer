@@ -1,32 +1,48 @@
-import { Component } from '@angular/core';
-import { AuthService } from '../services/auth.service'
-import { GlobalEventsManager } from '../services/global.events.manager'
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
     selector: 'nav-menu',
     templateUrl: './navmenu.component.html',
     styleUrls: ['./navmenu.component.css']
 })
-export class NavMenuComponent {
-    public _loggedIn: boolean = false;
+export class NavMenuComponent implements OnInit, OnDestroy {
+    isAuthorizedSubscription: Subscription;
+    isAuthorized: boolean;
 
-    constructor (
-      private _authService: AuthService,
-      private _globalEventsManager: GlobalEventsManager) {
-          _globalEventsManager.showNavBarEmitter.subscribe((mode)=>{
-            // mode will be null the first time it is created, so you need to igonore it when null
-            if (mode !== null) {
-                console.log("Global Event, sent: " + mode);
-                this._loggedIn = mode;
-            }
-        });
-  }
+    constructor(public oidcSecurityService: OidcSecurityService) {
 
-  public login(){
-      this._authService.startSigninMainWindow();
-  }
+    }
 
-  public logout(){
-      this._authService.startSignoutMainWindow();
-  }
+    ngOnInit() {
+        this.isAuthorizedSubscription = this.oidcSecurityService.getIsAuthorized().subscribe(
+            (isAuthorized: boolean) => {
+                this.isAuthorized = isAuthorized;
+            });
+
+        if (window.location.hash) {
+            this.oidcSecurityService.authorizedCallback();
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.isAuthorizedSubscription.unsubscribe();
+    }
+
+    public login() {
+        console.log('start login');
+        this.oidcSecurityService.authorize();
+    }
+
+    public refreshSession() {
+        console.log('start refreshSession');
+        this.oidcSecurityService.authorize();
+    }
+
+    public logout() {
+        console.log('start logoff');
+        this.oidcSecurityService.logoff();
+    }
 }
