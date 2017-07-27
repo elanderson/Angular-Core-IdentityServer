@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { AuthService } from '../services/auth.service';
+
 
 @Component({
     selector: 'nav-menu',
@@ -12,18 +13,17 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     isAuthorizedSubscription: Subscription;
     isAuthorized: boolean;
 
-    constructor(public oidcSecurityService: OidcSecurityService) {
-
+    constructor(public authService: AuthService) {
     }
 
     ngOnInit() {
-        this.isAuthorizedSubscription = this.oidcSecurityService.getIsAuthorized().subscribe(
+        this.isAuthorizedSubscription = this.authService.getIsAuthorized().subscribe(
             (isAuthorized: boolean) => {
                 this.isAuthorized = isAuthorized;
             });
 
         if (window.location.hash) {
-            this.oidcSecurityService.authorizedCallback();
+            this.authService.authorizedCallback();
         }
     }
 
@@ -32,17 +32,14 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     }
 
     public login() {
-        console.log('start login');
-        this.oidcSecurityService.authorize();
+        this.authService.login();
     }
 
     public refreshSession() {
-        console.log('start refreshSession');
-        this.oidcSecurityService.authorize();
+        this.authService.refreshSession();
     }
 
     public logout() {
-        console.log('start logoff');
-        this.oidcSecurityService.logoff();
+        this.authService.logout();
     }
 }

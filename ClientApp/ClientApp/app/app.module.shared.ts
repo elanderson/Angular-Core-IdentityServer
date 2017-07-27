@@ -8,7 +8,8 @@ import { FetchDataComponent } from './components/fetchdata/fetchdata.component';
 import { CounterComponent } from './components/counter/counter.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 
-import { AuthModule, OpenIDImplicitFlowConfiguration, OidcSecurityService } from 'angular-auth-oidc-client';
+import { AuthModule } from 'angular-auth-oidc-client';
+import { AuthService } from './components/services/auth.service';
 
 export const sharedConfig: NgModule = {
     bootstrap: [ AppComponent ],
@@ -31,5 +32,5 @@ export const sharedConfig: NgModule = {
             { path: '**', redirectTo: 'home' }
         ])
     ],
-    providers: [OidcSecurityService ]
+    providers: [ AuthService ]
 };
