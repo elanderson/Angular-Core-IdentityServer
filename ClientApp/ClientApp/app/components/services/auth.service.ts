@@ -1,4 +1,5 @@
 import { Injectable, Component, OnInit, OnDestroy } from '@angular/core';
+import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -9,7 +10,8 @@ export class AuthService implements OnInit, OnDestroy {
     isAuthorizedSubscription: Subscription;
     isAuthorized: boolean;
 
-    constructor(public oidcSecurityService: OidcSecurityService) {
+    constructor(public oidcSecurityService: OidcSecurityService,
+        private http: Http) {
 
         const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
         openIDImplicitFlowConfiguration.stsServer = 'http://localhost:5000';
@@ -52,12 +54,11 @@ export class AuthService implements OnInit, OnDestroy {
         this.isAuthorizedSubscription.unsubscribe();
     }
 
-    authorizedCallback(){
+    authorizedCallback() {
         this.oidcSecurityService.authorizedCallback();
     }
 
-    getIsAuthorized(): Observable<boolean>
-    {
+    getIsAuthorized(): Observable<boolean> {
         return this.oidcSecurityService.getIsAuthorized();
     }
 
@@ -75,5 +76,76 @@ export class AuthService implements OnInit, OnDestroy {
         console.log('start logoff');
         this.oidcSecurityService.logoff();
     }
+
+    get(url: string, options?: RequestOptions): Observable<Response> {
+        if (options) {
+            options = this.setRequestOptions(options);
+        }
+        else {
+            options = this.setRequestOptions();
+        }
+        return this.http.get(url, options);
+    }
+
+    put(url: string, data: any, options?: RequestOptions): Observable<Response> {
+        let body = JSON.stringify(data);
+
+        if (options) {
+            options = this.setRequestOptions(options);
+        }
+        else {
+            options = this.setRequestOptions();
+        }
+        return this.http.put(url, body, options);
+    }
+
+    delete(url: string, options?: RequestOptions): Observable<Response> {
+        if (options) {
+            options = this.setRequestOptions(options);
+        }
+        else {
+            options = this.setRequestOptions();
+        }
+        return this.http.delete(url, options);
+    }
+
+    post(url: string, data: any, options?: RequestOptions): Observable<Response> {
+        let body = JSON.stringify(data);
+
+        if (options) {
+            options = this.setRequestOptions(options);
+        }
+        else {
+            options = this.setRequestOptions();
+        }
+        return this.http.post(url, body, options);
+    }
+
+    private setRequestOptions(options?: RequestOptions) {
+        if (options) {
+            this.appendAuthHeader(options.headers);
+        }
+        else {
+            options = new RequestOptions({ headers: this.getHeaders(), body: "" });
+        }
+        return options;
+    }
+
+    private getHeaders() {
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        this.appendAuthHeader(headers);
+        return headers;
+    }
+
+    private appendAuthHeader(headers: Headers) {       
+        const token = this.oidcSecurityService.getToken();
+
+        if (token == '') return;
+
+        const tokenValue = 'Bearer ' + token;
+        headers.append('Authorization', tokenValue);
+    }
+
 
 }
