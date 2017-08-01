@@ -1,32 +1,45 @@
-import { Component } from '@angular/core';
-import { AuthService } from '../services/auth.service'
-import { GlobalEventsManager } from '../services/global.events.manager'
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+
+import { AuthService } from '../services/auth.service';
+
 
 @Component({
     selector: 'nav-menu',
     templateUrl: './navmenu.component.html',
     styleUrls: ['./navmenu.component.css']
 })
-export class NavMenuComponent {
-    public _loggedIn: boolean = false;
+export class NavMenuComponent implements OnInit, OnDestroy {
+    isAuthorizedSubscription: Subscription;
+    isAuthorized: boolean;
 
-    constructor (
-      private _authService: AuthService,
-      private _globalEventsManager: GlobalEventsManager) {
-          _globalEventsManager.showNavBarEmitter.subscribe((mode)=>{
-            // mode will be null the first time it is created, so you need to igonore it when null
-            if (mode !== null) {
-                console.log("Global Event, sent: " + mode);
-                this._loggedIn = mode;
-            }
-        });
-  }
+    constructor(public authService: AuthService) {
+    }
 
-  public login(){
-      this._authService.startSigninMainWindow();
-  }
+    ngOnInit() {
+        this.isAuthorizedSubscription = this.authService.getIsAuthorized().subscribe(
+            (isAuthorized: boolean) => {
+                this.isAuthorized = isAuthorized;
+            });
 
-  public logout(){
-      this._authService.startSignoutMainWindow();
-  }
+        if (window.location.hash) {
+            this.authService.authorizedCallback();
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.isAuthorizedSubscription.unsubscribe();
+    }
+
+    public login() {
+        this.authService.login();
+    }
+
+    public refreshSession() {
+        this.authService.refreshSession();
+    }
+
+    public logout() {
+        this.authService.logout();
+    }
 }

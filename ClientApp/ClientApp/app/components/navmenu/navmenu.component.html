@@ -13,29 +13,19 @@
         <div class='navbar-collapse collapse'>
             <ul class='nav navbar-nav'>
                 <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/home']">
-                        <span class='glyphicon glyphicon-home'></span> Home
-                    </a>
+                    <a [routerLink]="['/home']"><span class='glyphicon glyphicon-home'></span> Home</a>
                 </li>
                 <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/counter']">
-                        <span class='glyphicon glyphicon-education'></span> Counter
-                    </a>
+                    <a [routerLink]="['/counter']"><span class='glyphicon glyphicon-education'></span> Counter</a>
                 </li>
                 <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/fetch-data']">
-                        <span class='glyphicon glyphicon-th-list'></span> Fetch data
-                    </a>
+                    <a *ngIf="isAuthorized" [routerLink]="['/fetch-data']"><span class='glyphicon glyphicon-th-list'></span> Fetch data</a>
                 </li>
-                <li *ngIf="!_loggedIn" [routerLinkActive]="['link-active']">
-                    <a (click)="login()" [routerLink]="['/login']">
-                        <span class="glyphicon glyphicon-user"></span> Login
-                    </a>
+                <li [routerLinkActive]="['link-active']">
+                    <a *ngIf="!isAuthorized" (click)="login()" [routerLink]="['/login']"><span class="glyphicon glyphicon-user"></span> Login</a>
                 </li>
-                <li *ngIf="_loggedIn" [routerLinkActive]="['link-active']">
-                    <a (click)="logout()" [routerLink]="['/logout']">
-                        <span class='glyphicon glyphicon-log-out'></span> Logout
-                    </a>
+                <li [routerLinkActive]="['link-active']">
+                    <a *ngIf="isAuthorized" (click)="logout()"><span class='glyphicon glyphicon-log-out'></span> Logout</a>
                 </li>
             </ul>
         </div>

@@ -4,10 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { sharedConfig } from './app.module.shared';
 
-import { AuthService } from './components/services/auth.service';
-import { GlobalEventsManager } from './components/services/global.events.manager';
-import { AuthGuardService } from './components/services/auth-guard.service';
-
 @NgModule({
     bootstrap: sharedConfig.bootstrap,
     declarations: sharedConfig.declarations,
@@ -20,7 +16,7 @@ import { AuthGuardService } from './components/services/auth-guard.service';
     providers: [
         { provide: 'ORIGIN_URL', useValue: location.origin },
         { provide: 'API_URL', useValue: "http://localhost:5001/api/" },
-        AuthService, AuthGuardService, GlobalEventsManager
+        ...sharedConfig.providers
     ]
 })
 export class AppModule {

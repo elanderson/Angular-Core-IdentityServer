@@ -9,8 +9,8 @@ import { AuthService } from '../services/auth.service';
 export class FetchDataComponent {
     public forecasts: WeatherForecast[];
 
-    constructor(http: Http, @Inject('API_URL') apiUrl: string, authService: AuthService) {
-        authService.AuthGet(apiUrl + 'SampleData/WeatherForecasts').subscribe(result => {
+    constructor(authService: AuthService, @Inject('API_URL') apiUrl: string) {
+        authService.get(apiUrl + 'SampleData/WeatherForecasts').subscribe(result => {
             this.forecasts = result.json() as WeatherForecast[];
         });
     }
