@@ -14,3 +14,4 @@ Exploring Angular (4+) with ASP.NET Core, Entity Framework Core and IdentityServ
 
 ## Other Related Posts
 1. [Identity Server: Redirect When Route Requires Logged in User](https://elanderson.net/2017/08/identity-server-redirect-when-route-requires-logged-in-user/)
+2. [Identity Server: Changing Angular OpenID Connect Clients](https://elanderson.net/2017/08/identity-server-changing-angular-openid-connect-clients/)
