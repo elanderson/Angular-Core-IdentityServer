@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { Http } from '@angular/http';
-import { AuthService } from '../services/auth.service'
+import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: 'fetchdata',
