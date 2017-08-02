@@ -89,6 +89,15 @@ namespace IdentityApp
 
             app.UseIdentityServer();
 
+            app.UseTwitterAuthentication(new TwitterOptions
+            {
+                AuthenticationScheme = "Twitter",
+                DisplayName = "Twitter",
+                SignInScheme = "Identity.External",
+                ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"],
+                ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"]
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
