@@ -32,5 +32,8 @@ export const sharedConfig: NgModule = {
             { path: '**', redirectTo: 'home' }
         ])
     ],
-    providers: [ AuthService ]
+    providers: [ 
+        AuthService,
+        { provide: 'API_URL', useValue: "http://localhost:5001/api/" }
+    ]
 };
