@@ -4,10 +4,10 @@
 }
 
 <dt>access token</dt>
-<dd>@await ViewContext.HttpContext.Authentication.GetTokenAsync("access_token")</dd>
+<dd>@await ViewContext.HttpContext.GetTokenAsync("access_token")</dd>
 
 <dt>refresh token</dt>
-<dd>@await ViewContext.HttpContext.Authentication.GetTokenAsync("refresh_token")</dd>
+<dd>@await ViewContext.HttpContext.GetTokenAsync("refresh_token")</dd>
 
 <dt>api response called with user access token</dt>
 <dd>@ViewData["apiCallUsingUserAccessToken"]</dd>
