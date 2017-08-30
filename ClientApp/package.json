@@ -1,5 +1,5 @@
 {
-  "name": "WebApplication3",
+  "name": "ClientApp",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -46,7 +46,8 @@
     "webpack": "2.5.1",
     "webpack-hot-middleware": "2.18.2",
     "webpack-merge": "4.1.0",
-    "zone.js": "0.8.12"
+    "zone.js": "0.8.12",
+    "angular-auth-oidc-client": "^1.3.1"
   },
   "devDependencies": {
     "@types/chai": "4.0.1",
