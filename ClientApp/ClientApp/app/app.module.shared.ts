@@ -11,10 +11,10 @@ import { FetchDataComponent } from './components/fetchdata/fetchdata.component';
 import { CounterComponent } from './components/counter/counter.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 
-import { AuthModule } from 'angular-auth-oidc-client';
+import { AuthModule, OidcSecurityService } from 'angular-auth-oidc-client';
 import { AuthService } from './components/services/auth.service';
 
-@NgModule ({
+@NgModule({
     declarations: [
         AppComponent,
         NavMenuComponent,
@@ -39,8 +39,18 @@ import { AuthService } from './components/services/auth.service';
     ],
     providers: [
         AuthService,
-        { provide: 'API_URL', useValue: "http://localhost:5001/api/" }
+        OidcSecurityService,
+        { provide: 'ORIGIN_URL', useFactory: getBaseUrl },
+        { provide: 'API_URL', useFactory: getApiUrl }
     ]
 })
 export class AppModuleShared {
+}
+
+export function getBaseUrl() {
+    return document.getElementsByTagName('base')[0].href;
+}
+
+export function getApiUrl() {
+    return "http://localhost:5001/api/";
 }
