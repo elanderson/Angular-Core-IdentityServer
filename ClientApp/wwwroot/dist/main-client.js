@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "e4b2c278a2f3df9561ed"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "5c95d35492fd64c98259"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -1321,45 +1321,42 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var AuthService = (function () {
     function AuthService(oidcSecurityService, http) {
+        var _this = this;
         this.oidcSecurityService = oidcSecurityService;
         this.http = http;
         var openIdImplicitFlowConfiguration = new __WEBPACK_IMPORTED_MODULE_2_angular_auth_oidc_client__["c" /* OpenIDImplicitFlowConfiguration */]();
         openIdImplicitFlowConfiguration.stsServer = 'http://localhost:5000';
         openIdImplicitFlowConfiguration.redirect_url = 'http://localhost:5002/callback';
-        // The Client MUST validate that the aud (audience) Claim contains its client_id value registered at the Issuer identified by the iss (issuer) Claim as an audience.
-        // The ID Token MUST be rejected if the ID Token does not list the Client as a valid audience, or if it contains additional audiences not trusted by the Client.
         openIdImplicitFlowConfiguration.client_id = 'ng';
         openIdImplicitFlowConfiguration.response_type = 'id_token token';
         openIdImplicitFlowConfiguration.scope = 'openid profile apiApp';
         openIdImplicitFlowConfiguration.post_logout_redirect_uri = 'http://localhost:5002/home';
-        openIdImplicitFlowConfiguration.start_checksession = true;
-        openIdImplicitFlowConfiguration.silent_renew = true;
         openIdImplicitFlowConfiguration.startup_route = '/home';
-        // HTTP 403
         openIdImplicitFlowConfiguration.forbidden_route = '/forbidden';
-        // HTTP 401
         openIdImplicitFlowConfiguration.unauthorized_route = '/unauthorized';
+        openIdImplicitFlowConfiguration.auto_userinfo = true;
         openIdImplicitFlowConfiguration.log_console_warning_active = true;
         openIdImplicitFlowConfiguration.log_console_debug_active = false;
-        // id_token C8: The iat Claim can be used to reject tokens that were issued too far away from the current time,
-        // limiting the amount of time that nonces need to be stored to prevent attacks.The acceptable range is Client specific.
         openIdImplicitFlowConfiguration.max_id_token_iat_offset_allowed_in_seconds = 10;
         this.oidcSecurityService.setupModule(openIdImplicitFlowConfiguration);
+        if (this.oidcSecurityService.moduleSetup) {
+            this.doCallbackLogicIfRequired();
+        }
+        else {
+            this.oidcSecurityService.onModuleSetup.subscribe(function () {
+                _this.doCallbackLogicIfRequired();
+            });
+        }
     }
     AuthService.prototype.ngOnInit = function () {
         var _this = this;
         this.isAuthorizedSubscription = this.oidcSecurityService.getIsAuthorized().subscribe(function (isAuthorized) {
             _this.isAuthorized = isAuthorized;
         });
-        if (window.location.hash) {
-            this.oidcSecurityService.authorizedCallback();
-        }
     };
     AuthService.prototype.ngOnDestroy = function () {
         this.isAuthorizedSubscription.unsubscribe();
-    };
-    AuthService.prototype.authorizedCallback = function () {
-        this.oidcSecurityService.authorizedCallback();
+        this.oidcSecurityService.onModuleSetup.unsubscribe();
     };
     AuthService.prototype.getIsAuthorized = function () {
         return this.oidcSecurityService.getIsAuthorized();
@@ -1376,43 +1373,24 @@ var AuthService = (function () {
         console.log('start logoff');
         this.oidcSecurityService.logoff();
     };
+    AuthService.prototype.doCallbackLogicIfRequired = function () {
+        if (typeof location !== "undefined" && window.location.hash) {
+            this.oidcSecurityService.authorizedCallback();
+        }
+    };
     AuthService.prototype.get = function (url, options) {
-        if (options) {
-            options = this.setRequestOptions(options);
-        }
-        else {
-            options = this.setRequestOptions();
-        }
-        return this.http.get(url, options);
+        return this.http.get(url, this.setRequestOptions(options));
     };
     AuthService.prototype.put = function (url, data, options) {
         var body = JSON.stringify(data);
-        if (options) {
-            options = this.setRequestOptions(options);
-        }
-        else {
-            options = this.setRequestOptions();
-        }
-        return this.http.put(url, body, options);
+        return this.http.put(url, body, this.setRequestOptions(options));
     };
     AuthService.prototype.delete = function (url, options) {
-        if (options) {
-            options = this.setRequestOptions(options);
-        }
-        else {
-            options = this.setRequestOptions();
-        }
-        return this.http.delete(url, options);
+        return this.http.delete(url, this.setRequestOptions(options));
     };
     AuthService.prototype.post = function (url, data, options) {
         var body = JSON.stringify(data);
-        if (options) {
-            options = this.setRequestOptions(options);
-        }
-        else {
-            options = this.setRequestOptions();
-        }
-        return this.http.post(url, body, options);
+        return this.http.post(url, body, this.setRequestOptions(options));
     };
     AuthService.prototype.setRequestOptions = function (options) {
         if (options) {
@@ -1430,6 +1408,8 @@ var AuthService = (function () {
         return headers;
     };
     AuthService.prototype.appendAuthHeader = function (headers) {
+        if (headers == null)
+            headers = this.getHeaders();
         var token = this.oidcSecurityService.getToken();
         if (token == '')
             return;
@@ -6810,9 +6790,6 @@ var NavMenuComponent = (function () {
         this.isAuthorizedSubscription = this.authService.getIsAuthorized().subscribe(function (isAuthorized) {
             _this.isAuthorized = isAuthorized;
         });
-        if (window.location.hash) {
-            this.authService.authorizedCallback();
-        }
     };
     NavMenuComponent.prototype.ngOnDestroy = function () {
         this.isAuthorizedSubscription.unsubscribe();

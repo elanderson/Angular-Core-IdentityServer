@@ -21,10 +21,6 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             (isAuthorized: boolean) => {
                 this.isAuthorized = isAuthorized;
             });
-
-        if (window.location.hash) {
-            this.authService.authorizedCallback();
-        }
     }
 
     ngOnDestroy(): void {
