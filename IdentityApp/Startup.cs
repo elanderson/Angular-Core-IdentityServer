@@ -10,29 +10,20 @@ using IdentityApp.Data;
 using IdentityApp.Data.Migrations.IdentityServer;
 using IdentityApp.Models;
 using IdentityApp.Services;
+using Microsoft.AspNetCore.Authentication.Twitter;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityApp
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets<Startup>();
-            }
-
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
-        public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -43,7 +34,8 @@ namespace IdentityApp
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddIdentityServer();
 
             services.AddMvc();
 
@@ -54,14 +46,26 @@ namespace IdentityApp
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddIdentityServer()
-                .AddTemporarySigningCredential()
+                .AddDeveloperSigningCredential()
                 .AddAspNetIdentity<ApplicationUser>()
-                .AddConfigurationStore(builder =>
-                    builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"), options =>
-                       options.MigrationsAssembly(migrationsAssembly)))
-                .AddOperationalStore(builder =>
-                    builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"), options =>
-                        options.MigrationsAssembly(migrationsAssembly)));
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"),
+                            db => db.MigrationsAssembly(migrationsAssembly));
+                })
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"),
+                            db => db.MigrationsAssembly(migrationsAssembly));
+                });
+
+            services.AddAuthentication().AddTwitter(twitterOptions =>
+            {
+                twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,18 +89,9 @@ namespace IdentityApp
 
             app.UseStaticFiles();
 
-            app.UseIdentity();
+            app.UseAuthentication();
 
             app.UseIdentityServer();
-
-            app.UseTwitterAuthentication(new TwitterOptions
-            {
-                AuthenticationScheme = "Twitter",
-                DisplayName = "Twitter",
-                SignInScheme = "Identity.External",
-                ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"],
-                ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"]
-            });
 
             app.UseMvc(routes =>
             {
