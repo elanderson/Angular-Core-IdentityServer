@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using IdentityApp.Data;
-using IdentityApp.Data.Migrations.IdentityServer;
 using IdentityApp.Models;
 using IdentityApp.Services;
 using Microsoft.AspNetCore.Identity;
@@ -82,8 +81,6 @@ namespace IdentityApp
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
-            IdentityServerDatabaseInitialization.InitializeDatabase(app);
 
             app.UseStaticFiles();
 
