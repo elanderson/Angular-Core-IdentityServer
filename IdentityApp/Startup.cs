@@ -84,8 +84,6 @@ namespace IdentityApp
 
             app.UseStaticFiles();
 
-            app.UseAuthentication();
-
             app.UseIdentityServer();
 
             app.UseMvc(routes =>
