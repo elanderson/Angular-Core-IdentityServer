@@ -11,9 +11,10 @@ using System;
 namespace IdentityApp.Data.Migrations.IdentityServer.Configuration
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    partial class ConfigurationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170916201945_ConfigCore2")]
+    partial class ConfigCore2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
