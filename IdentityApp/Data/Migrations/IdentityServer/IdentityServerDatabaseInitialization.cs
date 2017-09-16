@@ -1,6 +1,6 @@
-﻿using IdentityServer4.EntityFramework.DbContexts;
+﻿using System;
+using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
@@ -9,24 +9,23 @@ namespace IdentityApp.Data.Migrations.IdentityServer
 {
     public static class IdentityServerDatabaseInitialization
     {
-        public static void InitializeDatabase(IApplicationBuilder app)
+        public static void InitializeDatabase(IServiceProvider services)
         {
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                PerformMigrations(serviceScope);
-                SeedData(serviceScope);
-            }
+            PerformMigrations(services);
+            SeedData(services);
+
         }
 
-        private static void PerformMigrations(IServiceScope serviceScope)
+        private static void PerformMigrations(IServiceProvider services)
         {
-            serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
-            serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+            services.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+            services.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
+            services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
         }
 
-        private static void SeedData(IServiceScope serviceScope)
+        private static void SeedData(IServiceProvider services)
         {
-            var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+            var context = services.GetRequiredService<ConfigurationDbContext>();
 
             if (!context.Clients.Any())
             {
