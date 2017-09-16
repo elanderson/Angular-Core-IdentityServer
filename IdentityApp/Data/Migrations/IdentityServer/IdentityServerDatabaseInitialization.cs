@@ -1,7 +1,6 @@
 ﻿using System;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
@@ -19,6 +18,7 @@ namespace IdentityApp.Data.Migrations.IdentityServer
 
         private static void PerformMigrations(IServiceProvider services)
         {
+            services.GetRequiredService<ApplicationDbContext>().Database.Migrate();
             services.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
             services.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
         }
