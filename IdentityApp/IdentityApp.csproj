@@ -9,6 +9,9 @@
     <UserSecretsId>aspnet-IdentityApp-77a69134-7ece-4481-86db-b56de2a12985</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Properties\PublishProfiles\IdentityApp20170918125501 - Web Deploy.pubxml" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.0.0-rc1" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="2.0.0-rc1" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
@@ -18,5 +21,9 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\Migrations\IdentityServer\Configuration\" />
+    <Folder Include="Data\Migrations\IdentityServer\PersistedGrant\" />
   </ItemGroup>
 </Project>
