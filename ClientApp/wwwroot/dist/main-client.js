@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "5cf3dd3cff6c5d286b33"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "0d6d980c09dd525a75b1"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -1316,21 +1316,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 
 
 
 var AuthService = (function () {
-    function AuthService(oidcSecurityService, http) {
+    function AuthService(oidcSecurityService, http, orignUrl, identityUrl) {
+        //var orignUrl = '';
+        //var identityUrl = '';
         var _this = this;
         this.oidcSecurityService = oidcSecurityService;
         this.http = http;
         var openIdImplicitFlowConfiguration = new __WEBPACK_IMPORTED_MODULE_2_angular_auth_oidc_client__["c" /* OpenIDImplicitFlowConfiguration */]();
-        openIdImplicitFlowConfiguration.stsServer = 'http://localhost:5000';
-        openIdImplicitFlowConfiguration.redirect_url = 'http://localhost:5002/callback';
+        openIdImplicitFlowConfiguration.stsServer = identityUrl;
+        openIdImplicitFlowConfiguration.redirect_url = orignUrl + '/callback';
         openIdImplicitFlowConfiguration.client_id = 'ng';
         openIdImplicitFlowConfiguration.response_type = 'id_token token';
         openIdImplicitFlowConfiguration.scope = 'openid profile apiApp';
-        openIdImplicitFlowConfiguration.post_logout_redirect_uri = 'http://localhost:5002/home';
+        openIdImplicitFlowConfiguration.post_logout_redirect_uri = orignUrl + '/home';
         openIdImplicitFlowConfiguration.startup_route = '/home';
         openIdImplicitFlowConfiguration.forbidden_route = '/forbidden';
         openIdImplicitFlowConfiguration.unauthorized_route = '/unauthorized';
@@ -1418,8 +1423,10 @@ var AuthService = (function () {
     };
     AuthService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+        __param(2, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Inject"])('ORIGIN_URL')),
+        __param(3, __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Inject"])('IDENTITY_URL')),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_angular_auth_oidc_client__["b" /* OidcSecurityService */],
-            __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"]])
+            __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"], String, String])
     ], AuthService);
     return AuthService;
 }());
@@ -2103,6 +2110,7 @@ module.exports = (__webpack_require__(1))(9);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return OpenIDImplicitFlowConfiguration; });
 /* unused harmony export DefaultConfiguration */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthModule; });
+/* unused harmony export AuthorizationResult */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(30);
@@ -2317,6 +2325,16 @@ var AuthConfiguration = (function () {
          */
         get: function () {
             return this.openIDImplicitFlowConfiguration.auto_clean_state_after_authentication !== undefined ? this.openIDImplicitFlowConfiguration.auto_clean_state_after_authentication : this.defaultConfig.auto_clean_state_after_authentication;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AuthConfiguration.prototype, "trigger_authorization_result_event", {
+        /**
+         * @return {?}
+         */
+        get: function () {
+            return this.openIDImplicitFlowConfiguration.trigger_authorization_result_event !== undefined ? this.openIDImplicitFlowConfiguration.trigger_authorization_result_event : this.defaultConfig.trigger_authorization_result_event;
         },
         enumerable: true,
         configurable: true
@@ -3231,6 +3249,13 @@ OidcSecurityUserService.ctorParameters = function () { return [
     { type: OidcSecurityCommon, },
     { type: AuthWellKnownEndpoints, },
 ]; };
+var AuthorizationResult = {};
+AuthorizationResult.authorized = 1;
+AuthorizationResult.forbidden = 2;
+AuthorizationResult.unauthorized = 3;
+AuthorizationResult[AuthorizationResult.authorized] = "authorized";
+AuthorizationResult[AuthorizationResult.forbidden] = "forbidden";
+AuthorizationResult[AuthorizationResult.unauthorized] = "unauthorized";
 var OidcSecurityService = (function () {
     /**
      * @param {?} platformId
@@ -3254,6 +3279,7 @@ var OidcSecurityService = (function () {
         this.oidcSecurityCommon = oidcSecurityCommon;
         this.authWellKnownEndpoints = authWellKnownEndpoints;
         this.onModuleSetup = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"](true);
+        this.onAuthorizationResult = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"](true);
         this.moduleSetup = false;
         this._isAuthorized = new __WEBPACK_IMPORTED_MODULE_6_rxjs_BehaviorSubject__["BehaviorSubject"](false);
         this._userData = new __WEBPACK_IMPORTED_MODULE_6_rxjs_BehaviorSubject__["BehaviorSubject"]('');
@@ -3502,21 +3528,41 @@ var OidcSecurityService = (function () {
                 if (_this.authConfiguration.auto_userinfo) {
                     _this.getUserinfo(isRenewProcess, result, id_token, decoded_id_token).subscribe(function (response) {
                         if (response) {
-                            _this.router.navigate([_this.authConfiguration.startup_route]);
+                            if (_this.authConfiguration.trigger_authorization_result_event) {
+                                _this.onAuthorizationResult.emit(AuthorizationResult.authorized);
+                            }
+                            else {
+                                _this.router.navigate([_this.authConfiguration.startup_route]);
+                            }
                         }
                         else {
-                            _this.router.navigate([_this.authConfiguration.unauthorized_route]);
+                            if (_this.authConfiguration.trigger_authorization_result_event) {
+                                _this.onAuthorizationResult.emit(AuthorizationResult.unauthorized);
+                            }
+                            else {
+                                _this.router.navigate([_this.authConfiguration.unauthorized_route]);
+                            }
                         }
                     });
                 }
                 else {
-                    _this.router.navigate([_this.authConfiguration.startup_route]);
+                    if (_this.authConfiguration.trigger_authorization_result_event) {
+                        _this.onAuthorizationResult.emit(AuthorizationResult.authorized);
+                    }
+                    else {
+                        _this.router.navigate([_this.authConfiguration.startup_route]);
+                    }
                 }
             }
             else {
                 _this.oidcSecurityCommon.logDebug('authorizedCallback, token(s) validation failed, resetting');
                 _this.resetAuthorizationData(false);
-                _this.router.navigate([_this.authConfiguration.unauthorized_route]);
+                if (_this.authConfiguration.trigger_authorization_result_event) {
+                    _this.onAuthorizationResult.emit(AuthorizationResult.unauthorized);
+                }
+                else {
+                    _this.router.navigate([_this.authConfiguration.unauthorized_route]);
+                }
             }
         });
     };
@@ -3698,12 +3744,22 @@ var OidcSecurityService = (function () {
     OidcSecurityService.prototype.handleError = function (error) {
         this.oidcSecurityCommon.logError(error);
         if (error.status == 403) {
-            this.router.navigate([this.authConfiguration.forbidden_route]);
+            if (this.authConfiguration.trigger_authorization_result_event) {
+                this.onAuthorizationResult.emit(AuthorizationResult.unauthorized);
+            }
+            else {
+                this.router.navigate([this.authConfiguration.forbidden_route]);
+            }
         }
         else if (error.status == 401) {
             var /** @type {?} */ silentRenew = this.oidcSecurityCommon.retrieve(this.oidcSecurityCommon.storage_silent_renew_running);
             this.resetAuthorizationData(silentRenew);
-            this.router.navigate([this.authConfiguration.unauthorized_route]);
+            if (this.authConfiguration.trigger_authorization_result_event) {
+                this.onAuthorizationResult.emit(AuthorizationResult.unauthorized);
+            }
+            else {
+                this.router.navigate([this.authConfiguration.unauthorized_route]);
+            }
         }
     };
     /**
@@ -3810,6 +3866,7 @@ OidcSecurityService.ctorParameters = function () { return [
 ]; };
 OidcSecurityService.propDecorators = {
     'onModuleSetup': [{ type: __WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"] },],
+    'onAuthorizationResult': [{ type: __WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"] },],
 };
 var AuthModule = (function () {
     function AuthModule() {
@@ -6540,6 +6597,7 @@ module.exports = function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
+/* unused harmony export getBaseUrl */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(375);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_module_shared__ = __webpack_require__(77);
@@ -6565,14 +6623,17 @@ var AppModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_2__app_module_shared__["a" /* AppModuleShared */]
             ],
             providers: [
-                __WEBPACK_IMPORTED_MODULE_2__app_module_shared__["a" /* AppModuleShared */],
-                { provide: 'API_URL', useValue: window.API_URL }
+                { provide: 'ORIGIN_URL', useFactory: getBaseUrl },
+                __WEBPACK_IMPORTED_MODULE_2__app_module_shared__["a" /* AppModuleShared */]
             ]
         })
     ], AppModule);
     return AppModule;
 }());
 
+function getBaseUrl() {
+    return document.getElementsByTagName('base')[0].href;
+}
 
 
 /***/ }),
@@ -6581,7 +6642,8 @@ var AppModule = (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModuleShared; });
-/* unused harmony export getBaseUrl */
+/* unused harmony export apiUrlFactory */
+/* unused harmony export identityUrlFactory */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(371);
@@ -6642,17 +6704,21 @@ var AppModuleShared = (function () {
                 ])
             ],
             providers: [
+                { provide: 'API_URL', useFactory: apiUrlFactory },
+                { provide: 'IDENTITY_URL', useFactory: identityUrlFactory },
                 __WEBPACK_IMPORTED_MODULE_12__components_services_auth_service__["a" /* AuthService */],
-                __WEBPACK_IMPORTED_MODULE_11_angular_auth_oidc_client__["b" /* OidcSecurityService */],
-                { provide: 'ORIGIN_URL', useFactory: getBaseUrl }
+                __WEBPACK_IMPORTED_MODULE_11_angular_auth_oidc_client__["b" /* OidcSecurityService */]
             ]
         })
     ], AppModuleShared);
     return AppModuleShared;
 }());
 
-function getBaseUrl() {
-    return document.getElementsByTagName('base')[0].href;
+function apiUrlFactory() {
+    return "api"; //(window as any).URL_Config.API_URL;
+}
+function identityUrlFactory() {
+    return "identity"; //(window as any).URL_Config.IDENTITY_URL;
 }
 
 
@@ -9155,7 +9221,7 @@ module.exports = "<h1>Hello, world!</h1>\r\n<p>Welcome to your new single-page a
 /* 94 */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='main-nav'>\r\n    <div class='navbar navbar-inverse'>\r\n        <div class='navbar-header'>\r\n            <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>\r\n                <span class='sr-only'>Toggle navigation</span>\r\n                <span class='icon-bar'></span>\r\n                <span class='icon-bar'></span>\r\n                <span class='icon-bar'></span>\r\n            </button>\r\n            <a class='navbar-brand' [routerLink]=\"['/home']\">WebApplicationBasic</a>\r\n        </div>\r\n        <div class='clearfix'></div>\r\n        <div class='navbar-collapse collapse'>\r\n            <ul class='nav navbar-nav'>\r\n                <li [routerLinkActive]=\"['link-active']\">\r\n                    <a [routerLink]=\"['/home']\"><span class='glyphicon glyphicon-home'></span> Home</a>\r\n                </li>\r\n                <li [routerLinkActive]=\"['link-active']\">\r\n                    <a [routerLink]=\"['/counter']\"><span class='glyphicon glyphicon-education'></span> Counter</a>\r\n                </li>\r\n                <li [routerLinkActive]=\"['link-active']\">\r\n                    <a [routerLink]=\"['/fetch-data']\"><span class='glyphicon glyphicon-th-list'></span> Fetch data</a>\r\n                </li>\r\n                <li [routerLinkActive]=\"['link-active']\">\r\n                    <a *ngIf=\"!isAuthorized\" (click)=\"login()\" [routerLink]=\"['/login']\"><span class=\"glyphicon glyphicon-user\"></span> Login</a>\r\n                </li>\r\n                <li [routerLinkActive]=\"['link-active']\">\r\n                    <a *ngIf=\"isAuthorized\" (click)=\"logout()\"><span class='glyphicon glyphicon-log-out'></span> Logout</a>\r\n                </li>\r\n            </ul>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
+module.exports = "<div class='main-nav'>\r\n    <div class='navbar navbar-inverse'>\r\n        <div class='navbar-header'>\r\n            <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>\r\n                <span class='sr-only'>Toggle navigation</span>\r\n                <span class='icon-bar'></span>\r\n                <span class='icon-bar'></span>\r\n                <span class='icon-bar'></span>\r\n            </button>\r\n            <a class='navbar-brand' [routerLink]=\"['/home']\">WebApplicationBasic</a>\r\n        </div>\r\n        <div class='clearfix'></div>\r\n        <div class='navbar-collapse collapse'>\r\n            <ul class='nav navbar-nav'>\r\n                <li [routerLinkActive]=\"['link-active']\">\r\n                    <a [routerLink]=\"['/home']\"><span class='glyphicon glyphicon-home'></span> Home</a>\r\n                </li>\r\n                <li [routerLinkActive]=\"['link-active']\">\r\n                    <a [routerLink]=\"['/counter']\"><span class='glyphicon glyphicon-education'></span> Counter</a>\r\n                </li>\r\n                <li [routerLinkActive]=\"['link-active']\">\r\n                    <a *ngIf=\"isAuthorized\" [routerLink]=\"['/fetch-data']\"><span class='glyphicon glyphicon-th-list'></span> Fetch data</a>\r\n                </li>\r\n                <li [routerLinkActive]=\"['link-active']\">\r\n                    <a *ngIf=\"!isAuthorized\" (click)=\"login()\" [routerLink]=\"['/login']\"><span class=\"glyphicon glyphicon-user\"></span> Login</a>\r\n                </li>\r\n                <li [routerLinkActive]=\"['link-active']\">\r\n                    <a *ngIf=\"isAuthorized\" (click)=\"logout()\"><span class='glyphicon glyphicon-log-out'></span> Logout</a>\r\n                </li>\r\n            </ul>\r\n        </div>\r\n    </div>\r\n</div>\r\n";
 
 /***/ }),
 /* 95 */

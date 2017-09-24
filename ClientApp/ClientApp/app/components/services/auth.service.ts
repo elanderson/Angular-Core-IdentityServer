@@ -1,4 +1,4 @@
-import { Injectable, Component, OnInit, OnDestroy } from '@angular/core';
+import { Injectable, Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
@@ -11,15 +11,20 @@ export class AuthService implements OnInit, OnDestroy {
     isAuthorized: boolean;
 
     constructor(public oidcSecurityService: OidcSecurityService,
-        private http: Http) {
+        private http: Http,
+        @Inject('ORIGIN_URL') orignUrl: string,
+        @Inject('IDENTITY_URL') identityUrl: string
+    ) {
+        //var orignUrl = '';
+        //var identityUrl = '';
 
         const openIdImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
-        openIdImplicitFlowConfiguration.stsServer = 'http://localhost:5000';
-        openIdImplicitFlowConfiguration.redirect_url = 'http://localhost:5002/callback';
+        openIdImplicitFlowConfiguration.stsServer = identityUrl;
+        openIdImplicitFlowConfiguration.redirect_url = orignUrl + '/callback';
         openIdImplicitFlowConfiguration.client_id = 'ng';
         openIdImplicitFlowConfiguration.response_type = 'id_token token';
         openIdImplicitFlowConfiguration.scope = 'openid profile apiApp';
-        openIdImplicitFlowConfiguration.post_logout_redirect_uri = 'http://localhost:5002/home';
+        openIdImplicitFlowConfiguration.post_logout_redirect_uri = orignUrl + '/home';
         openIdImplicitFlowConfiguration.startup_route = '/home';
         openIdImplicitFlowConfiguration.forbidden_route = '/forbidden';
         openIdImplicitFlowConfiguration.unauthorized_route = '/unauthorized';

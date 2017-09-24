@@ -38,14 +38,19 @@ import { AuthService } from './components/services/auth.service';
         ])
     ],
     providers: [
+        { provide: 'API_URL', useFactory: apiUrlFactory },
+        { provide: 'IDENTITY_URL', useFactory: identityUrlFactory },
         AuthService,
-        OidcSecurityService,
-        { provide: 'ORIGIN_URL', useFactory: getBaseUrl }
+        OidcSecurityService
     ]
 })
 export class AppModuleShared {
 }
 
-export function getBaseUrl() {
-    return document.getElementsByTagName('base')[0].href;
+export function apiUrlFactory() {
+    return "api"; //(window as any).URL_Config.API_URL;
+}
+
+export function identityUrlFactory() {
+    return "identity"; //(window as any).URL_Config.IDENTITY_URL;
 }

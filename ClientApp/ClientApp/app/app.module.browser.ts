@@ -10,11 +10,13 @@ import { AppComponent } from './components/app/app.component';
         AppModuleShared
     ],
     providers: [
-        AppModuleShared,
-        { provide: 'API_URL', useValue: (window as any).API_URL }
+        { provide: 'ORIGIN_URL', useFactory: getBaseUrl },
+        AppModuleShared
     ]
 })
 export class AppModule {
 }
 
-
+export function getBaseUrl() {
+    return document.getElementsByTagName('base')[0].href;
+}

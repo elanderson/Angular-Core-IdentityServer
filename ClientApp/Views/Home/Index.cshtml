@@ -4,8 +4,16 @@
     ViewData["Title"] = "Home Page";
 }
 
+@{
+    var api = Configuration["ApiAddress"];
+    var identity = Configuration["IdentityServerAddress"];
+}
+
 <app asp-prerender-module="ClientApp/dist/main-server"
-     asp-prerender-data=@(Configuration["ApiAddress"])>Loading...</app>
+     asp-prerender-data='new {
+    API_URL = api,
+    IDENTITY_URL = identity
+}'>Loading...</app>
 
 <script src="~/dist/vendor.js" asp-append-version="true"></script>
 @section scripts {
