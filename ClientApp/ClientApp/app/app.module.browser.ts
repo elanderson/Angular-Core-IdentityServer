@@ -10,7 +10,8 @@ import { AppComponent } from './components/app/app.component';
         AppModuleShared
     ],
     providers: [
-        AppModuleShared
+        AppModuleShared,
+        { provide: 'API_URL', useValue: (window as any).API_URL }
     ]
 })
 export class AppModule {

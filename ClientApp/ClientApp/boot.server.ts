@@ -14,6 +14,7 @@ export default createServerRenderer(params => {
         { provide: INITIAL_CONFIG, useValue: { document: '<app></app>', url: params.url } },
         { provide: APP_BASE_HREF, useValue: params.baseUrl },
         { provide: 'BASE_URL', useValue: params.origin + params.baseUrl },
+        { provide: 'API_URL', useValue: params.data}
     ];
 
     return platformDynamicServer(providers).bootstrapModule(AppModule).then(moduleRef => {
@@ -28,7 +29,8 @@ export default createServerRenderer(params => {
                 // completing the request in case there's an error to report
                 setImmediate(() => {
                     resolve({
-                        html: state.renderToString()
+                        html: state.renderToString(),
+                        globals: {API_URL: params.data}
                     });
                     moduleRef.destroy();
                 });
