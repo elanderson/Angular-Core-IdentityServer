@@ -15,9 +15,6 @@ export class AuthService implements OnInit, OnDestroy {
         @Inject('ORIGIN_URL') orignUrl: string,
         @Inject('IDENTITY_URL') identityUrl: string
     ) {
-        //var orignUrl = '';
-        //var identityUrl = '';
-
         const openIdImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
         openIdImplicitFlowConfiguration.stsServer = identityUrl;
         openIdImplicitFlowConfiguration.redirect_url = orignUrl + '/callback';

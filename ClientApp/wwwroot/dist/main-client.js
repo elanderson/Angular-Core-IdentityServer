@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "0d6d980c09dd525a75b1"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "a11c8103ee154537145b"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -1324,8 +1324,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 
 var AuthService = (function () {
     function AuthService(oidcSecurityService, http, orignUrl, identityUrl) {
-        //var orignUrl = '';
-        //var identityUrl = '';
         var _this = this;
         this.oidcSecurityService = oidcSecurityService;
         this.http = http;
