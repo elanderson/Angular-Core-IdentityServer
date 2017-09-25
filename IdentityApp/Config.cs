@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using IdentityServer4;
 using IdentityServer4.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace IdentityApp
 {
@@ -25,7 +26,7 @@ namespace IdentityApp
         }
 
         // clients want to access resources (aka scopes)
-        public static IEnumerable<Client> GetClients()
+        public static IEnumerable<Client> GetClients(IConfiguration configuration)
         {
             // client credentials client
             return new List<Client>
@@ -61,8 +62,8 @@ namespace IdentityApp
                         new Secret("secret".Sha256())
                     },
 
-                    RedirectUris = { "http://localhost:5002/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+                    RedirectUris = { $"{configuration["ClientAddress"]}/signin-oidc" },
+                    PostLogoutRedirectUris = { $"{configuration["ClientAddress"]}/signout-callback-oidc" },
 
                     AllowedScopes =
                     {
@@ -82,9 +83,9 @@ namespace IdentityApp
                     AllowAccessTokensViaBrowser = true,
                     RequireConsent = true,
 
-                    RedirectUris = { "http://localhost:5002/callback" },
-                    PostLogoutRedirectUris = { "http://localhost:5002/home" },
-                    AllowedCorsOrigins = { "http://localhost:5002" },
+                    RedirectUris = { $"{configuration["ClientAddress"]}/callback" },
+                    PostLogoutRedirectUris = { $"{configuration["ClientAddress"]}/home" },
+                    AllowedCorsOrigins = { configuration["ClientAddress"] },
 
                     AllowedScopes =
                     {
