@@ -3433,7 +3433,7 @@
         "@types/node": {
           "version": "6.0.79",
           "resolved": "https://registry.npmjs.org/@types/node/-/node-6.0.79.tgz",
-          "integrity": "sha1-Xv59Sm2MRTx+nq9V2TH0oi+sUWk="
+          "integrity": "sha512-7F3/P6MkTPA0QxOstRqfcnoReCUy5V/QG92cyBoZSPnqdX44L8TtNELSVfN56gAttm3YWj9cEi8FRIPVq0WmeQ=="
         }
       }
     },
@@ -3744,7 +3744,7 @@
         "chalk": {
           "version": "2.0.1",
           "resolved": "https://registry.npmjs.org/chalk/-/chalk-2.0.1.tgz",
-          "integrity": "sha1-2+xJQ20q4V9TYRTnbRRlbNvA9E0=",
+          "integrity": "sha512-Mp+FXEI+FrwY/XYV45b2YD3E8i3HwnEAoFcM0qlZzq/RZ9RwWitt2Y/c7cqRAz70U7hfekqx6qNYthuKFO6K0g==",
           "requires": {
             "ansi-styles": "3.1.0",
             "escape-string-regexp": "1.0.5",
@@ -3796,7 +3796,7 @@
         "chalk": {
           "version": "2.0.1",
           "resolved": "https://registry.npmjs.org/chalk/-/chalk-2.0.1.tgz",
-          "integrity": "sha1-2+xJQ20q4V9TYRTnbRRlbNvA9E0=",
+          "integrity": "sha512-Mp+FXEI+FrwY/XYV45b2YD3E8i3HwnEAoFcM0qlZzq/RZ9RwWitt2Y/c7cqRAz70U7hfekqx6qNYthuKFO6K0g==",
           "requires": {
             "ansi-styles": "3.1.0",
             "escape-string-regexp": "1.0.5",
@@ -3848,7 +3848,7 @@
         "chalk": {
           "version": "2.0.1",
           "resolved": "https://registry.npmjs.org/chalk/-/chalk-2.0.1.tgz",
-          "integrity": "sha1-2+xJQ20q4V9TYRTnbRRlbNvA9E0=",
+          "integrity": "sha512-Mp+FXEI+FrwY/XYV45b2YD3E8i3HwnEAoFcM0qlZzq/RZ9RwWitt2Y/c7cqRAz70U7hfekqx6qNYthuKFO6K0g==",
           "requires": {
             "ansi-styles": "3.1.0",
             "escape-string-regexp": "1.0.5",
@@ -3900,7 +3900,7 @@
         "chalk": {
           "version": "2.0.1",
           "resolved": "https://registry.npmjs.org/chalk/-/chalk-2.0.1.tgz",
-          "integrity": "sha1-2+xJQ20q4V9TYRTnbRRlbNvA9E0=",
+          "integrity": "sha512-Mp+FXEI+FrwY/XYV45b2YD3E8i3HwnEAoFcM0qlZzq/RZ9RwWitt2Y/c7cqRAz70U7hfekqx6qNYthuKFO6K0g==",
           "requires": {
             "ansi-styles": "3.1.0",
             "escape-string-regexp": "1.0.5",

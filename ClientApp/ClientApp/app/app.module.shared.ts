@@ -38,8 +38,6 @@ import { AuthService } from './components/services/auth.service';
         ])
     ],
     providers: [
-        { provide: 'API_URL', useFactory: apiUrlFactory },
-        { provide: 'IDENTITY_URL', useFactory: identityUrlFactory },
         AuthService,
         OidcSecurityService
     ]
@@ -47,10 +45,3 @@ import { AuthService } from './components/services/auth.service';
 export class AppModuleShared {
 }
 
-export function apiUrlFactory() {
-    return "api"; //(window as any).URL_Config.API_URL;
-}
-
-export function identityUrlFactory() {
-    return "identity"; //(window as any).URL_Config.IDENTITY_URL;
-}
