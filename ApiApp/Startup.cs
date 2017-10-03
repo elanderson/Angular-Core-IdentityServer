@@ -24,7 +24,7 @@ namespace ApiApp
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(o =>
             {
-                o.Authority = "http://localhost:5000";
+                o.Authority = Configuration["IdentityServerAddress"];
                 o.Audience = "apiApp";
                 o.RequireHttpsMetadata = false;
             });
@@ -33,7 +33,7 @@ namespace ApiApp
             {
                 options.AddPolicy("default", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5002")
+                    policy.WithOrigins(Configuration["ClientAddress"])
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });

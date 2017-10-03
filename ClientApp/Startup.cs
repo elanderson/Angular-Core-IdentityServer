@@ -32,7 +32,7 @@ namespace ClientApp
                 .AddCookie()
                 .AddOpenIdConnect(options =>
                 {
-                    options.Authority = "http://localhost:5000";
+                    options.Authority = Configuration["IdentityServerAddress"];
                     options.RequireHttpsMetadata = false;
 
                     options.ClientId = "mvc";

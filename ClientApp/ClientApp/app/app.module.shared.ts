@@ -39,18 +39,9 @@ import { AuthService } from './components/services/auth.service';
     ],
     providers: [
         AuthService,
-        OidcSecurityService,
-        { provide: 'ORIGIN_URL', useFactory: getBaseUrl },
-        { provide: 'API_URL', useFactory: getApiUrl }
+        OidcSecurityService
     ]
 })
 export class AppModuleShared {
 }
 
-export function getBaseUrl() {
-    return document.getElementsByTagName('base')[0].href;
-}
-
-export function getApiUrl() {
-    return "http://localhost:5001/api/";
-}

@@ -1,8 +1,14 @@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<app asp-prerender-module="ClientApp/dist/main-server">Loading...</app>
+<app asp-prerender-module="ClientApp/dist/main-server"
+     asp-prerender-data='new {
+    apiUrl = Configuration["ApiAddress"],
+    identityUrl = Configuration["IdentityServerAddress"]
+}'>Loading...</app>
 
 <script src="~/dist/vendor.js" asp-append-version="true"></script>
 @section scripts {

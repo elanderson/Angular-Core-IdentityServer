@@ -27,7 +27,7 @@ namespace IdentityApp
         {
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -48,13 +48,13 @@ namespace IdentityApp
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
-                        builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"),
+                        builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                             db => db.MigrationsAssembly(migrationsAssembly));
                 })
                 .AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
-                        builder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"),
+                        builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                             db => db.MigrationsAssembly(migrationsAssembly));
                 });
 

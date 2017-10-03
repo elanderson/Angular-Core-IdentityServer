@@ -4,6 +4,7 @@ using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace IdentityApp.Data.Migrations.IdentityServer
 {
@@ -26,10 +27,11 @@ namespace IdentityApp.Data.Migrations.IdentityServer
         private static void SeedData(IServiceProvider services)
         {
             var context = services.GetRequiredService<ConfigurationDbContext>();
+            var config = services.GetRequiredService<IConfiguration>();
 
             if (!context.Clients.Any())
             {
-                foreach (var client in Config.GetClients())
+                foreach (var client in Config.GetClients(config))
                 {
                     context.Clients.Add(client.ToEntity());
                 }
