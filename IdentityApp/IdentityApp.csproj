@@ -12,8 +12,8 @@
     <None Remove="Properties\PublishProfiles\IdentityApp20170918125501 - Web Deploy.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.0.0-rc1" />
-    <PackageReference Include="IdentityServer4.EntityFramework" Version="2.0.0-rc1" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.0.0" />
+    <PackageReference Include="IdentityServer4.EntityFramework" Version="2.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
   </ItemGroup>

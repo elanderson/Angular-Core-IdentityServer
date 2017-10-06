@@ -6,6 +6,7 @@ using IdentityModel;
 using IdentityServer4.Extensions;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,95 +18,84 @@ namespace IdentityServer4.Quickstart.UI
         private readonly IClientStore _clientStore;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAuthenticationSchemeProvider _schemeProvider;
 
         public AccountService(
             IIdentityServerInteractionService interaction,
             IHttpContextAccessor httpContextAccessor,
+            IAuthenticationSchemeProvider schemeProvider,
             IClientStore clientStore)
         {
             _interaction = interaction;
             _httpContextAccessor = httpContextAccessor;
+            _schemeProvider = schemeProvider;
             _clientStore = clientStore;
         }
 
-        public async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
-        {
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            if (context?.IdP != null)
-            {
-                // this is meant to short circuit the UI and only trigger the one external IdP
-                return new LoginViewModel
-                {
-                    EnableLocalLogin = false,
-                    ReturnUrl = returnUrl,
-                    Email = context?.LoginHint,
-                    ExternalProviders = new ExternalProvider[] { new ExternalProvider { AuthenticationScheme = context.IdP } }
-                };
-            }
+        //public async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
+        //{
+        //    var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+        //    if (context?.IdP != null)
+        //    {
+        //        // this is meant to short circuit the UI and only trigger the one external IdP
+        //        return new LoginViewModel
+        //        {
+        //            EnableLocalLogin = false,
+        //            ReturnUrl = returnUrl,
+        //            Username = context?.LoginHint,
+        //            ExternalProviders = new ExternalProvider[] {new ExternalProvider { AuthenticationScheme = context.IdP } }
+        //        };
+        //    }
 
-            var schemes = _httpContextAccessor.HttpContext.Authentication.GetAuthenticationSchemes();
+        //    var schemes = await _schemeProvider.GetAllSchemesAsync();
 
-            var providers = schemes
-                .Where(x => x.DisplayName != null && !AccountOptions.WindowsAuthenticationSchemes.Contains(x.AuthenticationScheme))
-                .Select(x => new ExternalProvider
-                {
-                    DisplayName = x.DisplayName,
-                    AuthenticationScheme = x.AuthenticationScheme
-                }).ToList();
+        //    var providers = schemes
+        //        .Where(x => x.DisplayName != null)
+        //        .Select(x => new ExternalProvider
+        //        {
+        //            DisplayName = x.DisplayName,
+        //            AuthenticationScheme = x.Name
+        //        }).ToList();
 
-            if (AccountOptions.WindowsAuthenticationEnabled)
-            {
-                // this is needed to handle windows auth schemes
-                var windowsSchemes = schemes.Where(s => AccountOptions.WindowsAuthenticationSchemes.Contains(s.AuthenticationScheme));
-                if (windowsSchemes.Any())
-                {
-                    providers.Add(new ExternalProvider
-                    {
-                        AuthenticationScheme = AccountOptions.WindowsAuthenticationSchemes.First(),
-                        DisplayName = AccountOptions.WindowsAuthenticationDisplayName
-                    });
-                }
-            }
+        //    var allowLocal = true;
+        //    if (context?.ClientId != null)
+        //    {
+        //        var client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId);
+        //        if (client != null)
+        //        {
+        //            allowLocal = client.EnableLocalLogin;
 
-            var allowLocal = true;
-            if (context?.ClientId != null)
-            {
-                var client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId);
-                if (client != null)
-                {
-                    allowLocal = client.EnableLocalLogin;
+        //            if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
+        //            {
+        //                providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
+        //            }
+        //        }
+        //    }
 
-                    if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
-                    {
-                        providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
-                    }
-                }
-            }
+        //    return new LoginViewModel
+        //    {
+        //        AllowRememberLogin = AccountOptions.AllowRememberLogin,
+        //        EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
+        //        ReturnUrl = returnUrl,
+        //        Username = context?.LoginHint,
+        //        ExternalProviders = providers.ToArray()
+        //    };
+        //}
 
-            return new LoginViewModel
-            {
-                AllowRememberLogin = AccountOptions.AllowRememberLogin,
-                EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
-                ReturnUrl = returnUrl,
-                Email = context?.LoginHint,
-                ExternalProviders = providers.ToArray()
-            };
-        }
-
-        public async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
-        {
-            var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
-            vm.Email = model.Email;
-            vm.RememberLogin = model.RememberLogin;
-            return vm;
-        }
+        //public async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
+        //{
+        //    var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
+        //    vm.Username = model.Username;
+        //    vm.RememberLogin = model.RememberLogin;
+        //    return vm;
+        //}
 
         public async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)
         {
             var vm = new LogoutViewModel { LogoutId = logoutId, ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
 
             var user = _httpContextAccessor.HttpContext.User;
-            if (user == null || user.Identity.IsAuthenticated == false)
+            if (user?.Identity.IsAuthenticated != true)
             {
                 // if the user is not authenticated, then just show logged out page
                 vm.ShowLogoutPrompt = false;
@@ -140,20 +130,24 @@ namespace IdentityServer4.Quickstart.UI
             };
 
             var user = _httpContextAccessor.HttpContext.User;
-            if (user != null)
+            if (user?.Identity.IsAuthenticated == true)
             {
                 var idp = user.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
-                if (idp != null && idp != IdentityServerConstants.LocalIdentityProvider)
+                if (idp != null && idp != IdentityServer4.IdentityServerConstants.LocalIdentityProvider)
                 {
-                    if (vm.LogoutId == null)
+                    var providerSupportsSignout = await _httpContextAccessor.HttpContext.GetSchemeSupportsSignOutAsync(idp);
+                    if (providerSupportsSignout)
                     {
-                        // if there's no current logout context, we need to create one
-                        // this captures necessary info from the current logged in user
-                        // before we signout and redirect away to the external IdP for signout
-                        vm.LogoutId = await _interaction.CreateLogoutContextAsync();
-                    }
+                        if (vm.LogoutId == null)
+                        {
+                            // if there's no current logout context, we need to create one
+                            // this captures necessary info from the current logged in user
+                            // before we signout and redirect away to the external IdP for signout
+                            vm.LogoutId = await _interaction.CreateLogoutContextAsync();
+                        }
 
-                    vm.ExternalAuthenticationScheme = idp;
+                        vm.ExternalAuthenticationScheme = idp;
+                    }
                 }
             }
 
