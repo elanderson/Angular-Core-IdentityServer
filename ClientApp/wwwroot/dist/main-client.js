@@ -59,7 +59,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "d1ead064e543de7823e0"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "5f1ce9b3d895e9c1f684"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
@@ -2108,7 +2108,6 @@ module.exports = (__webpack_require__(1))(9);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return OpenIDImplicitFlowConfiguration; });
 /* unused harmony export DefaultConfiguration */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthModule; });
-/* unused harmony export AuthorizationResult */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__(30);
@@ -2323,16 +2322,6 @@ var AuthConfiguration = (function () {
          */
         get: function () {
             return this.openIDImplicitFlowConfiguration.auto_clean_state_after_authentication !== undefined ? this.openIDImplicitFlowConfiguration.auto_clean_state_after_authentication : this.defaultConfig.auto_clean_state_after_authentication;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AuthConfiguration.prototype, "trigger_authorization_result_event", {
-        /**
-         * @return {?}
-         */
-        get: function () {
-            return this.openIDImplicitFlowConfiguration.trigger_authorization_result_event !== undefined ? this.openIDImplicitFlowConfiguration.trigger_authorization_result_event : this.defaultConfig.trigger_authorization_result_event;
         },
         enumerable: true,
         configurable: true
@@ -3247,13 +3236,6 @@ OidcSecurityUserService.ctorParameters = function () { return [
     { type: OidcSecurityCommon, },
     { type: AuthWellKnownEndpoints, },
 ]; };
-var AuthorizationResult = {};
-AuthorizationResult.authorized = 1;
-AuthorizationResult.forbidden = 2;
-AuthorizationResult.unauthorized = 3;
-AuthorizationResult[AuthorizationResult.authorized] = "authorized";
-AuthorizationResult[AuthorizationResult.forbidden] = "forbidden";
-AuthorizationResult[AuthorizationResult.unauthorized] = "unauthorized";
 var OidcSecurityService = (function () {
     /**
      * @param {?} platformId
@@ -3277,7 +3259,6 @@ var OidcSecurityService = (function () {
         this.oidcSecurityCommon = oidcSecurityCommon;
         this.authWellKnownEndpoints = authWellKnownEndpoints;
         this.onModuleSetup = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"](true);
-        this.onAuthorizationResult = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"](true);
         this.moduleSetup = false;
         this._isAuthorized = new __WEBPACK_IMPORTED_MODULE_6_rxjs_BehaviorSubject__["BehaviorSubject"](false);
         this._userData = new __WEBPACK_IMPORTED_MODULE_6_rxjs_BehaviorSubject__["BehaviorSubject"]('');
@@ -3526,41 +3507,21 @@ var OidcSecurityService = (function () {
                 if (_this.authConfiguration.auto_userinfo) {
                     _this.getUserinfo(isRenewProcess, result, id_token, decoded_id_token).subscribe(function (response) {
                         if (response) {
-                            if (_this.authConfiguration.trigger_authorization_result_event) {
-                                _this.onAuthorizationResult.emit(AuthorizationResult.authorized);
-                            }
-                            else {
-                                _this.router.navigate([_this.authConfiguration.startup_route]);
-                            }
+                            _this.router.navigate([_this.authConfiguration.startup_route]);
                         }
                         else {
-                            if (_this.authConfiguration.trigger_authorization_result_event) {
-                                _this.onAuthorizationResult.emit(AuthorizationResult.unauthorized);
-                            }
-                            else {
-                                _this.router.navigate([_this.authConfiguration.unauthorized_route]);
-                            }
+                            _this.router.navigate([_this.authConfiguration.unauthorized_route]);
                         }
                     });
                 }
                 else {
-                    if (_this.authConfiguration.trigger_authorization_result_event) {
-                        _this.onAuthorizationResult.emit(AuthorizationResult.authorized);
-                    }
-                    else {
-                        _this.router.navigate([_this.authConfiguration.startup_route]);
-                    }
+                    _this.router.navigate([_this.authConfiguration.startup_route]);
                 }
             }
             else {
                 _this.oidcSecurityCommon.logDebug('authorizedCallback, token(s) validation failed, resetting');
                 _this.resetAuthorizationData(false);
-                if (_this.authConfiguration.trigger_authorization_result_event) {
-                    _this.onAuthorizationResult.emit(AuthorizationResult.unauthorized);
-                }
-                else {
-                    _this.router.navigate([_this.authConfiguration.unauthorized_route]);
-                }
+                _this.router.navigate([_this.authConfiguration.unauthorized_route]);
             }
         });
     };
@@ -3742,22 +3703,12 @@ var OidcSecurityService = (function () {
     OidcSecurityService.prototype.handleError = function (error) {
         this.oidcSecurityCommon.logError(error);
         if (error.status == 403) {
-            if (this.authConfiguration.trigger_authorization_result_event) {
-                this.onAuthorizationResult.emit(AuthorizationResult.unauthorized);
-            }
-            else {
-                this.router.navigate([this.authConfiguration.forbidden_route]);
-            }
+            this.router.navigate([this.authConfiguration.forbidden_route]);
         }
         else if (error.status == 401) {
             var /** @type {?} */ silentRenew = this.oidcSecurityCommon.retrieve(this.oidcSecurityCommon.storage_silent_renew_running);
             this.resetAuthorizationData(silentRenew);
-            if (this.authConfiguration.trigger_authorization_result_event) {
-                this.onAuthorizationResult.emit(AuthorizationResult.unauthorized);
-            }
-            else {
-                this.router.navigate([this.authConfiguration.unauthorized_route]);
-            }
+            this.router.navigate([this.authConfiguration.unauthorized_route]);
         }
     };
     /**
@@ -3864,7 +3815,6 @@ OidcSecurityService.ctorParameters = function () { return [
 ]; };
 OidcSecurityService.propDecorators = {
     'onModuleSetup': [{ type: __WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"] },],
-    'onAuthorizationResult': [{ type: __WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"] },],
 };
 var AuthModule = (function () {
     function AuthModule() {
