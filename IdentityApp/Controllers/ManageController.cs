@@ -13,7 +13,6 @@ using Microsoft.Extensions.Options;
 using IdentityApp.Models;
 using IdentityApp.Models.ManageViewModels;
 using IdentityApp.Services;
-using IdentityServerWithAspNetIdentity.Services;
 
 namespace IdentityApp.Controllers
 {
@@ -496,7 +495,7 @@ namespace IdentityApp.Controllers
         {
             return string.Format(
                 AuthenicatorUriFormat,
-                _urlEncoder.Encode("IdentityServerWithAspNetIdentity"),
+                _urlEncoder.Encode("IdentityApp"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }

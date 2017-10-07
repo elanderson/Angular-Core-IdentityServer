@@ -17,7 +17,6 @@ using IdentityServer4.Quickstart.UI;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
-using IdentityServerWithAspNetIdentity.Services;
 
 namespace IdentityApp.Controllers
 {
