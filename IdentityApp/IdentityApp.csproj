@@ -23,7 +23,6 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\Migrations\IdentityServer\Configuration\" />
-    <Folder Include="Data\Migrations\IdentityServer\PersistedGrant\" />
+    <Folder Include="Data\Migrations\" />
   </ItemGroup>
 </Project>
