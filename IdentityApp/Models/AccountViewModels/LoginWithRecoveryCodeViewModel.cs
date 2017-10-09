@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace IdentityApp.Models.AccountViewModels
 {
-    public class ExternalLoginConfirmationViewModel
+    public class LoginWithRecoveryCodeViewModel
     {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Recovery Code")]
+            public string RecoveryCode { get; set; }
     }
 }

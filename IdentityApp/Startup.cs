@@ -31,8 +31,7 @@ namespace IdentityApp
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders()
-                .AddIdentityServer();
+                .AddDefaultTokenProviders();
 
             services.AddMvc();
 

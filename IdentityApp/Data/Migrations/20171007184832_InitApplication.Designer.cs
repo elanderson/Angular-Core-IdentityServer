@@ -11,7 +11,7 @@ using System;
 namespace IdentityApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170924001439_InitApplication")]
+    [Migration("20171007184832_InitApplication")]
     partial class InitApplication
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

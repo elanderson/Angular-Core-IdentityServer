@@ -6,18 +6,15 @@ using System.Threading.Tasks;
 
 namespace IdentityApp.Models.AccountViewModels
 {
-    public class VerifyCodeViewModel
+    public class LoginViewModel
     {
         [Required]
-        public string Provider { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
 
         [Required]
-        public string Code { get; set; }
-
-        public string ReturnUrl { get; set; }
-
-        [Display(Name = "Remember this browser?")]
-        public bool RememberBrowser { get; set; }
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
