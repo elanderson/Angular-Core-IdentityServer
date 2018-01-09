@@ -10,9 +10,10 @@ using System;
 namespace IdentityApp.Data.Migrations.IdentityServer.PersistedGrant
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    partial class PersistedGrantDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180109123811_PersistedGrant21")]
+    partial class PersistedGrant21
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
