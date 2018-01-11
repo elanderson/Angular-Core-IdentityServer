@@ -20,3 +20,4 @@ Exploring Angular (4+) with ASP.NET Core, Entity Framework Core and IdentityServ
 5. [Identity Server: Migration to ASP.NET Core 2](https://elanderson.net/2017/10/identity-server-migration-to-asp-net-core-2/)
 6. [Identity Server: Deploy to Azure](https://elanderson.net/2017/11/identity-server-deploy-to-azure/)
 7. [Identity Server: Upgrade Client to Angular 5](https://elanderson.net/2017/12/identity-server-upgrade-client-to-angular-5/)
+8. [Identity Server: Migration to version 2.1 and Angular HTTP Changes](https://elanderson.net/2018/02/identity-server-migration-to-version-2-1-and-angular-http-changes/)
