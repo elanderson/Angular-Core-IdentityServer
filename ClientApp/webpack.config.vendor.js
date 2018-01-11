@@ -22,6 +22,7 @@ module.exports = (env) => {
                 '@angular/core',
                 '@angular/forms',
                 '@angular/http',
+                '@angular/common/http',
                 '@angular/platform-browser',
                 '@angular/platform-browser-dynamic',
                 '@angular/router',

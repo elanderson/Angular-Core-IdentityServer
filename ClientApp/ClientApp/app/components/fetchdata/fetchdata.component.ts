@@ -10,7 +10,7 @@ export class FetchDataComponent {
 
     constructor(authService: AuthService, @Inject('API_URL') apiUrl: string) {
         authService.get(apiUrl + 'SampleData/WeatherForecasts').subscribe(result => {
-            this.forecasts = result.json() as WeatherForecast[];
+            this.forecasts = result as WeatherForecast[];
         }, error => console.error(error));
     }
 }

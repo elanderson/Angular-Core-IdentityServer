@@ -1,5 +1,5 @@
 import { Injectable, Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -11,7 +11,7 @@ export class AuthService implements OnInit, OnDestroy {
     isAuthorized: boolean;
 
     constructor(public oidcSecurityService: OidcSecurityService,
-        private http: Http,
+        private http: HttpClient,
         @Inject('ORIGIN_URL') originUrl: string,
         @Inject('IDENTITY_URL') identityUrl: string
     ) {
@@ -77,52 +77,36 @@ export class AuthService implements OnInit, OnDestroy {
         }
     }
 
-    get(url: string, options?: RequestOptions): Observable<Response> {
-        return this.http.get(url, this.setRequestOptions(options));
+    get(url: string): Observable<any> {
+        return this.http.get<any>(url, { headers: this.getHeaders() });
     }
 
-    put(url: string, data: any, options?: RequestOptions): Observable<Response> {
+    put(url: string, data: any): Observable<any> {
         const body = JSON.stringify(data);
-        return this.http.put(url, body, this.setRequestOptions(options));
+        return this.http.put<any>(url, body, { headers: this.getHeaders() });
     }
 
-    delete(url: string, options?: RequestOptions): Observable<Response> {
-        return this.http.delete(url, this.setRequestOptions(options));
+    delete(url: string): Observable<any> {
+        return this.http.delete<any>(url, { headers: this.getHeaders() });
     }
 
-    post(url: string, data: any, options?: RequestOptions): Observable<Response> {
+    post(url: string, data: any): Observable<any> {
         const body = JSON.stringify(data);
-        return this.http.post(url, body, this.setRequestOptions(options));
-    }
-
-    private setRequestOptions(options?: RequestOptions | null) {
-        if (options) {
-            this.appendAuthHeader(options.headers);
-        }
-        else {
-            options = new RequestOptions({ headers: this.getHeaders(), body: "" });
-        }
-        return options;
+        return this.http.post<any>(url, body, { headers: this.getHeaders() });
     }
 
     private getHeaders() {
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        this.appendAuthHeader(headers);
-        return headers;
+        let headers = new HttpHeaders();
+        headers = headers.set('Content-Type', 'application/json');
+        return this.appendAuthHeader(headers);
     }
 
-    private appendAuthHeader(headers?: Headers | null) {
-
-        if (headers == null) headers = this.getHeaders();
-
+    private appendAuthHeader(headers: HttpHeaders) {
         const token = this.oidcSecurityService.getToken();
 
-        if (token == '') return;
+        if (token === '') return headers;
 
         const tokenValue = 'Bearer ' + token;
-        headers.append('Authorization', tokenValue);
+        return headers.set('Authorization', tokenValue);
     }
-
-
 }
