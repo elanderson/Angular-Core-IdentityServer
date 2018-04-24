@@ -1,26 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class ConfigurationService {
 
-  private _configuration: IServerConfiguration;
+  private configuration: IServerConfiguration;
 
   constructor(http: HttpClient) {
-    http.get<IServerConfiguration>('/api/Configuration');
+    console.log("1");
+    http.get<IServerConfiguration>('/api/Configuration/ConfigurationData')
+      .subscribe(result => {
+        console.log(result);
+        this.configuration = result;
+      }, error => console.error(error));
+    console.log("2");
+    console.log(this.configuration);
   }
 
   get apiAddress() {
-    return this._configuration.ApiAddress;
+    return this.configuration.apiAddress;
   }
 
   get identityServerAddress() {
-    return this._configuration.IdentityServerAddress;
+    return this.configuration.identityServerAddress;
   }
 
 }
 
 export interface IServerConfiguration {
-  ApiAddress: string;
-  IdentityServerAddress: string;
+  apiAddress: string;
+  identityServerAddress: string;
 }
