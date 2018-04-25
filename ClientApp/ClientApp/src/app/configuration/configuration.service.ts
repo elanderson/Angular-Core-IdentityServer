@@ -7,28 +7,28 @@ export class ConfigurationService {
 
   private configuration: IServerConfiguration;
 
-  constructor(http: HttpClient) {
-    console.log("1");
-    http.get<IServerConfiguration>('/api/Configuration/ConfigurationData')
-      .subscribe(result => {
+  constructor(private http: HttpClient) { }
+
+  loadConfig() {
+    return this.http.get<IServerConfiguration>('/api/Configuration/ConfigurationData')
+      .toPromise()
+      .then(result => {
         console.log(result);
         this.configuration = result;
       }, error => console.error(error));
-    console.log("2");
-    console.log(this.configuration);
   }
 
   get apiAddress() {
-    return this.configuration.apiAddress;
+    return this.configuration.ApiAddress;
   }
 
   get identityServerAddress() {
-    return this.configuration.identityServerAddress;
+    return this.configuration.IdentityServerAddress;
   }
 
 }
 
 export interface IServerConfiguration {
-  apiAddress: string;
-  identityServerAddress: string;
+  ApiAddress: string;
+  IdentityServerAddress: string;
 }
