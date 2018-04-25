@@ -39,7 +39,7 @@ const appInitializerFn = (appConfig: ConfigurationService) => {
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'unauthorized', component: UnauthorizedComponent },
+      { path: 'unauthorized', component: UnauthorizedComponent }
     ])
   ],
   providers: [

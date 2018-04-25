@@ -13,8 +13,7 @@ export class ConfigurationService {
     return this.http.get<IServerConfiguration>('/api/Configuration/ConfigurationData')
       .toPromise()
       .then(result => {
-        console.log(result);
-        this.configuration = result;
+        this.configuration = <IServerConfiguration>(result);
       }, error => console.error(error));
   }
 
