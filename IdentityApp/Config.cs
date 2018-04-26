@@ -83,7 +83,7 @@ namespace IdentityApp
                     AllowAccessTokensViaBrowser = true,
                     RequireConsent = true,
 
-                    RedirectUris = { $"{configuration["ClientAddress"]}/callback" },
+                    RedirectUris = { $"{configuration["ClientAddress"]}/" },
                     PostLogoutRedirectUris = { $"{configuration["ClientAddress"]}/home" },
                     AllowedCorsOrigins = { configuration["ClientAddress"] },
 
